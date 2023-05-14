@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cellMap.hpp"
+#include "config.hpp"
 
 #include <SFML/Graphics.hpp>
 
@@ -12,18 +13,23 @@ class Cell
     sf::RectangleShape rect;
 
 public:
+    sf::Vector2i pos_grid;
     sf::Vector2f pos;
 
-    Cell(const float &pos_x, const float &pos_y, const float &size)
+    Cell(const int &col, const int &row)
     {
-        pos = sf::Vector2f(pos_x, pos_y);
+        pos_grid = sf::Vector2i(col, row);
+        pos = sf::Vector2f(col * SIZE, row * SIZE);
 
         rect.setPosition(pos);
-        rect.setSize(sf::Vector2f(size, size));
+        rect.setSize(sf::Vector2f(SIZE, SIZE));
         rect.setFillColor(sf::Color::White);
     }
 
-    static Cell* getCell(const float& pos_x, const float& pos_y, CellMap& cellMap);
+    static Cell* getCell(const int& col, const int& row, CellMap& cellMap);
     static void toggleCell(const int &col, const int &row, CellMap &cellMap);
+    static int neighbourCount(const int &pos_x, const int &pos_y, CellMap &cellMap);
+    static bool willBecomeAlive(const int &col, const int &row, CellMap &cellMap);
+    static void updateMap(CellMap &cellMap);
     void render(sf::RenderWindow &window);
 };

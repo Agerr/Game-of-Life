@@ -8,18 +8,18 @@
 
 class Cell;
 
-struct Vector2fHash {
-    std::size_t operator()(const sf::Vector2f& vec) const {
-        std::size_t h1 = std::hash<float>()(vec.x);
-        std::size_t h2 = std::hash<float>()(vec.y);
+struct Vector2Hash {
+    std::size_t operator()(const sf::Vector2i& vec) const {
+        std::size_t h1 = std::hash<int>()(vec.x);
+        std::size_t h2 = std::hash<int>()(vec.y);
         return h1 ^ (h2 << 1);
     }
 };
 
-struct Vector2fEqual {
-    bool operator()(const sf::Vector2f& v1, const sf::Vector2f& v2) const {
+struct Vector2Equal {
+    bool operator()(const sf::Vector2i& v1, const sf::Vector2i& v2) const {
         return v1.x == v2.x && v1.y == v2.y;
     }
 };
 
-using CellMap = std::unordered_map<sf::Vector2f, Cell, Vector2fHash, Vector2fEqual>;
+using CellMap = std::unordered_map<sf::Vector2i, Cell, Vector2Hash, Vector2Equal>;

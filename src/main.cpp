@@ -10,7 +10,12 @@ int main()
     window.setFramerateLimit(FPSLIMIT);
     window.setVerticalSyncEnabled(VSYNC);
 
+    const sf::Time updateFrequency = sf::seconds(1.0f / UPS);
+    sf::Clock clock;
+    sf::Time timeSinceUpdate = sf::Time::Zero;
+    
     CellMap cellMap;
+    bool paused = true;
 
     while (window.isOpen())
     {
@@ -27,6 +32,7 @@ int main()
                     switch (event.key.code)
                     {
                         case sf::Keyboard::Escape       :   window.close(); break;
+                        case sf::Keyboard::Space        :   paused ? paused = false : paused = true;
                     }
                     break;
 
@@ -44,6 +50,15 @@ int main()
                     break;
                 }
             }
+        }
+
+        // Logic
+        timeSinceUpdate += clock.restart();
+        while (timeSinceUpdate > updateFrequency)
+        {
+            timeSinceUpdate -= updateFrequency;
+
+            if (!paused) Cell::updateMap(cellMap);
         }
 
         // Render
