@@ -18,10 +18,10 @@ public:
     Cell(const int &col, const int &row)
     {
         pos_grid = sf::Vector2i(col, row);
-        pos = sf::Vector2f(col * SIZE, row * SIZE);
+        pos = sf::Vector2f(col * size, row * size);
 
         rect.setPosition(pos);
-        rect.setSize(sf::Vector2f(SIZE, SIZE));
+        rect.setSize(sf::Vector2f(size, size));
         rect.setFillColor(sf::Color::White);
     }
 

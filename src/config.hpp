@@ -1,15 +1,17 @@
 #pragma once
 
-#define NAME                    "_test_"
-#define FULLSCREEN              true
-#define FPSLIMIT                60
-#define VSYNC                   true
+#include <string>
 
-#define UPS                     25
-#define WIDTH                   1920
-#define HEIGHT                  1080
-#define SIZE                    10
+const std::string   windowName  =       "_test_";
+const bool          fullscreen  =       true;
+const int           fpsLimit    =       60;
+const bool          vSync       =       true;
 
-#define UNDERPOPULATION_BOUND   2
-#define OVERPOPULATION_BOUND    3
-#define REPRODUCTION_BOUND      3
+const int           ups         =       25;
+const int           width       =       1920;
+const int           height      =       1080;
+const int           size        =       10;
+
+const int underpopulation_bound =       2;
+const int  overpopulation_bound =       3;
+const int    reproduction_bound =       3;

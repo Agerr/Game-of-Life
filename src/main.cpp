@@ -6,14 +6,14 @@
 
 int main()
 {
-    sf::VideoMode videoMode = sf::VideoMode(WIDTH, HEIGHT);
-    if (FULLSCREEN) videoMode = sf::VideoMode::getFullscreenModes()[0];
+    sf::VideoMode videoMode = sf::VideoMode(width, height);
+    if (fullscreen) videoMode = sf::VideoMode::getFullscreenModes()[0];
 
-    sf::RenderWindow window(videoMode, NAME);
-    window.setFramerateLimit(FPSLIMIT);
-    window.setVerticalSyncEnabled(VSYNC);
+    sf::RenderWindow window(videoMode, windowName);
+    window.setFramerateLimit(fpsLimit);
+    window.setVerticalSyncEnabled(vSync);
 
-    const sf::Time updateFrequency = sf::seconds(1.0f / UPS);
+    const sf::Time updateFrequency = sf::seconds(1.0f / ups);
     sf::Clock clock;
     sf::Time timeSinceUpdate = sf::Time::Zero;
     
@@ -45,8 +45,8 @@ int main()
                     switch (event.mouseButton.button)
                     {
                         case sf::Mouse::Left:
-                            const int pressed_col = event.mouseButton.x / SIZE;
-                            const int pressed_row = event.mouseButton.y / SIZE;
+                            const int pressed_col = event.mouseButton.x / size;
+                            const int pressed_row = event.mouseButton.y / size;
                             Cell::toggleCell(pressed_col, pressed_row, cellMap);
                             break;
                     }

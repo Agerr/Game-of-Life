@@ -25,8 +25,8 @@ Cell* Cell::getCell(const int& col, const int& row, CellMap& cellMap)
 
 void Cell::toggleCell(const int &col, const int &row, CellMap &cellMap)
 {
-    const int cols = WIDTH / SIZE;
-    const int rows = HEIGHT / SIZE;
+    const int cols = width / size;
+    const int rows = height / size;
     if (col < 0 || col >= cols || row < 0 || row >= rows) return;
 
     Cell* cellptr = Cell::getCell(col, row, cellMap);
@@ -59,7 +59,7 @@ bool Cell::willBecomeAlive(const int &col, const int &row, CellMap &cellMap)
 {
     const int neighbourCount = Cell::neighbourCount(col, row, cellMap);
 
-    return (neighbourCount >= REPRODUCTION_BOUND && neighbourCount <= OVERPOPULATION_BOUND);
+    return (neighbourCount >= reproduction_bound && neighbourCount <= overpopulation_bound);
 }
 
 void Cell::updateMap(CellMap &cellMap)
@@ -72,7 +72,7 @@ void Cell::updateMap(CellMap &cellMap)
 
         const int neighbourCount = Cell::neighbourCount(cell.pos_grid.x, cell.pos_grid.y, cellMap);
         
-        if (neighbourCount < UNDERPOPULATION_BOUND || neighbourCount > OVERPOPULATION_BOUND)
+        if (neighbourCount < underpopulation_bound || neighbourCount > overpopulation_bound)
         {
             Cell::toggleCell(cell.pos_grid.x, cell.pos_grid.y, newCellMap);
         }
