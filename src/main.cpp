@@ -13,9 +13,6 @@ int main()
     window.setFramerateLimit(FPSLIMIT);
     window.setVerticalSyncEnabled(VSYNC);
 
-    const int cols = WIDTH / SIZE;
-    const int rows = HEIGHT / SIZE;
-
     CellMap cellMap;
 
     while (window.isOpen())
