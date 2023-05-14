@@ -6,7 +6,10 @@
 
 int main()
 {
-    sf::RenderWindow window { sf::VideoMode(WIDTH, HEIGHT), NAME };
+    sf::VideoMode videoMode = sf::VideoMode(WIDTH, HEIGHT);
+    if (FULLSCREEN) videoMode = sf::VideoMode::getFullscreenModes()[0];
+
+    sf::RenderWindow window(videoMode, NAME);
     window.setFramerateLimit(FPSLIMIT);
     window.setVerticalSyncEnabled(VSYNC);
 
