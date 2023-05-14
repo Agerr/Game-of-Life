@@ -4,9 +4,6 @@
 
 #include <SFML/Graphics.hpp>
 
-#include <iostream>
-#include <vector>
-
 int main()
 {
     sf::RenderWindow window { sf::VideoMode(WIDTH, HEIGHT), NAME };
