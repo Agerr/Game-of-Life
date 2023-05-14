@@ -59,8 +59,7 @@ bool Cell::willBecomeAlive(const int &col, const int &row, CellMap &cellMap)
 {
     const int neighbourCount = Cell::neighbourCount(col, row, cellMap);
 
-    if (neighbourCount >= REPRODUCTION_BOUND && neighbourCount <= OVERPOPULATION_BOUND) return true;
-    return false;
+    return (neighbourCount >= REPRODUCTION_BOUND && neighbourCount <= OVERPOPULATION_BOUND);
 }
 
 void Cell::updateMap(CellMap &cellMap)
