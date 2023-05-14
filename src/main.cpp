@@ -5,7 +5,8 @@
 #include <SFML/Graphics.hpp>
 
 int main()
-{
+{   
+    // Window
     sf::VideoMode videoMode = sf::VideoMode(width, height);
     if (fullscreen) videoMode = sf::VideoMode::getFullscreenModes()[0];
 
@@ -13,13 +14,31 @@ int main()
     window.setFramerateLimit(fpsLimit);
     window.setVerticalSyncEnabled(vSync);
 
-    const sf::Time updateFrequency = sf::seconds(1.0f / ups);
+    // Game clock
     sf::Clock clock;
+    const sf::Time updateFrequency = sf::seconds(1.0f / ups);
     sf::Time timeSinceUpdate = sf::Time::Zero;
+
+    sf::Time timeSinceBlink = sf::Time::Zero;
+    const sf::Time blinkFrequency = sf::seconds(1.0f / blinksPerSecond);
+    bool labelVisible = true;
     
+    // Main font
+    sf::Font font;
+    font.loadFromFile("../fonts/bit5x3.ttf");
+
+    // Paused label
+    sf::Text pausedLabel;
+    pausedLabel.setString("Paused");
+    pausedLabel.setFont(font);
+    pausedLabel.setCharacterSize(textSize);
+    pausedLabel.setFillColor(sf::Color(96, 96, 96, 191));
+    pausedLabel.setPosition(10, height - textSize - 10);
+
     CellMap cellMap;
     bool paused = true;
 
+    // Game loop
     while (window.isOpen())
     {
         // Events
@@ -35,7 +54,7 @@ int main()
                     switch (event.key.code)
                     {
                         case sf::Keyboard::Escape       :   window.close(); break;
-                        case sf::Keyboard::Space        :   paused ? paused = false : paused = true;
+                        case sf::Keyboard::Space        :   paused = !paused;
                     }
                     break;
 
@@ -56,7 +75,16 @@ int main()
         }
 
         // Logic
-        timeSinceUpdate += clock.restart();
+        const sf::Time timeElapsed = clock.restart();
+        timeSinceBlink += timeElapsed;
+        timeSinceUpdate += timeElapsed;
+
+        if (timeSinceBlink >= blinkFrequency)
+        {
+            timeSinceBlink = sf::Time::Zero;
+            labelVisible = !labelVisible;
+        }
+
         while (timeSinceUpdate > updateFrequency)
         {
             timeSinceUpdate -= updateFrequency;
@@ -66,7 +94,10 @@ int main()
 
         // Render
         window.clear();
+
         for (auto &pair : cellMap) pair.second.render(window);
+        if (paused && labelVisible) window.draw(pausedLabel);
+
         window.display();
     }
 
