@@ -1,5 +1,6 @@
 #include "cell.hpp"
 
+#include "cellMap.hpp"
 #include "config.hpp"
 
 #include <SFML/Graphics.hpp>
@@ -7,23 +8,37 @@
 #include <unordered_map>
 #include <vector>
 
-int Cell::atPos(const float &pos_x, const float &pos_y, const std::vector<Cell> &cellVector)
+Cell* Cell::getCell(const float& pos_x, const float& pos_y, CellMap& cellMap)
 {
-    for (int i = 0; i < cellVector.size(); i++)
+    const sf::Vector2f pos(pos_x, pos_y);
+
+    auto it = cellMap.find(pos);
+    if (it != cellMap.end())
     {
-        if (cellVector[i].pos.x == pos_x && cellVector[i].pos.y == pos_y) return i;
+        return &(it->second);
     }
-    return -1;
+    return nullptr;
 }
 
-void Cell::spawnCell(const int &col, const int &row, std::unordered_map<sf::Vector2f, Cell, Vector2fHash, Vector2fEqual> &cellMap)
+void Cell::toggleCell(const int &col, const int &row, CellMap &cellMap)
 {
-    const int x_pos = col * SIZE;
-    const int y_pos = row * SIZE;
-    const int index = Cell::atPos(x_pos, y_pos, cellVector);
+    const int cols = WIDTH / SIZE;
+    const int rows = HEIGHT / SIZE;
+    if (col < 0 || col >= cols || row < 0 || row >= rows) return;
 
-    if (index == -1) cellVector.push_back(Cell(x_pos, y_pos, SIZE));
-    else cellVector.erase(cellVector.begin() + index);
+    const int pos_x = col * SIZE;
+    const int pos_y = row * SIZE;
+
+    Cell* cellptr = Cell::getCell(pos_x, pos_y, cellMap);
+
+    if (cellptr == nullptr)
+    {
+        cellMap.emplace(sf::Vector2f(pos_x, pos_y), Cell(pos_x, pos_y, SIZE));
+    }
+    else
+    {
+        cellMap.erase(sf::Vector2f(pos_x, pos_y));
+    }
 }
 
 void Cell::render(sf::RenderWindow &window)

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "cellMap.hpp"
+
 #include <SFML/Graphics.hpp>
 
 #include <unordered_map>
@@ -21,7 +23,7 @@ public:
         rect.setFillColor(sf::Color::White);
     }
 
-    static int atPos(const float &pos_x, const float &pos_y, const std::vector<Cell> &cellVector);
-    static void spawnCell(const int &col, const int &row, std::unordered_map<sf::Vector2f, Cell, Vector2fHash, Vector2fEqual> &cellMap);
+    static Cell* getCell(const float& pos_x, const float& pos_y, CellMap& cellMap);
+    static void toggleCell(const int &col, const int &row, CellMap &cellMap);
     void render(sf::RenderWindow &window);
 };

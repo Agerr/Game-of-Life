@@ -10,8 +10,8 @@
 int main()
 {
     sf::RenderWindow window { sf::VideoMode(WIDTH, HEIGHT), NAME };
-    window.setFramerateLimit(60);
-    window.setVerticalSyncEnabled(true);
+    window.setFramerateLimit(FPSLIMIT);
+    window.setVerticalSyncEnabled(VSYNC);
 
     const int cols = WIDTH / SIZE;
     const int rows = HEIGHT / SIZE;
@@ -44,7 +44,7 @@ int main()
                         case sf::Mouse::Left:
                             const int pressed_col = event.mouseButton.x / SIZE;
                             const int pressed_row = event.mouseButton.y / SIZE;
-                            Cell::spawnCell(pressed_col, pressed_row, cellMap);
+                            Cell::toggleCell(pressed_col, pressed_row, cellMap);
                             break;
                     }
                     break;

@@ -6,6 +6,8 @@
 
 #include <unordered_map>
 
+class Cell;
+
 struct Vector2fHash {
     std::size_t operator()(const sf::Vector2f& vec) const {
         std::size_t h1 = std::hash<float>()(vec.x);
