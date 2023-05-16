@@ -24,7 +24,7 @@ int main()
     sf::Time timeSinceBlink = sf::Time::Zero;
     bool labelVisible = true;
     
-    // Main font
+    // Import main font
     sf::Font font;
     font.loadFromFile("../fonts/bit5x3.ttf");
 
