@@ -16,11 +16,12 @@ int main()
 
     // Game clock
     sf::Clock clock;
+
     const sf::Time updateFrequency = sf::seconds(1.0f / ups);
     sf::Time timeSinceUpdate = sf::Time::Zero;
 
-    sf::Time timeSinceBlink = sf::Time::Zero;
     const sf::Time blinkFrequency = sf::seconds(1.0f / blinksPerSecond);
+    sf::Time timeSinceBlink = sf::Time::Zero;
     bool labelVisible = true;
     
     // Main font
