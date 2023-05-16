@@ -91,7 +91,7 @@ int main()
         // Render
         window.clear();
 
-        for (auto &pair : cellMap) pair.second.render(window);
+        Cell::render(window, cellMap);
         // if (paused && labelVisible) window.draw(pausedLabel);
         if (debug.menu) debug.renderMenu(window);
 

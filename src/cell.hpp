@@ -30,5 +30,5 @@ public:
     static int neighbourCount(const int &pos_x, const int &pos_y, CellMap &cellMap);
     static bool willBecomeAlive(const int &col, const int &row, CellMap &cellMap);
     static void updateMap(CellMap &cellMap);
-    void render(sf::RenderWindow &window);
+    static void render(sf::RenderWindow &window, const CellMap &cellMap);
 };
