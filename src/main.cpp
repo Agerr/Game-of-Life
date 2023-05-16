@@ -32,7 +32,7 @@ int main()
     pausedLabel.setString("Paused");
     pausedLabel.setFont(font);
     pausedLabel.setCharacterSize(textSize);
-    pausedLabel.setFillColor(sf::Color(96, 96, 96, 191));
+    pausedLabel.setFillColor(textColor);
     pausedLabel.setPosition(10, height - textSize - 10);
 
     CellMap cellMap;

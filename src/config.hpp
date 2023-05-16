@@ -1,12 +1,15 @@
 #pragma once
 
+#include <SFML/Graphics.hpp>
+
 #include <string>
 
 const std::string   windowName  =       "_test_";
 const bool          fullscreen  =       false;
 const int           fpsLimit    =       60;
 const bool          vSync       =       true;
-const int           textSize    =       75; 
+const int           textSize    =       75;
+const sf::Color     textColor   =       sf::Color(96, 96, 96, 191);
 const int       blinksPerSecond =       2;
 
 const int           ups         =       25;
