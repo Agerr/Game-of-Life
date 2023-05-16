@@ -1,11 +1,12 @@
 #include "cell.hpp"
 #include "cellMap.hpp"
 #include "config.hpp"
+#include "debug.hpp"
 
 #include <SFML/Graphics.hpp>
 
 int main()
-{   
+{
     // Window
     sf::VideoMode videoMode = sf::VideoMode(width, height);
     if (fullscreen) videoMode = sf::VideoMode::getFullscreenModes()[0];
@@ -23,18 +24,8 @@ int main()
     const sf::Time blinkFrequency = sf::seconds(1.0f / blinksPerSecond);
     sf::Time timeSinceBlink = sf::Time::Zero;
     bool labelVisible = true;
-    
-    // Import main font
-    sf::Font font;
-    font.loadFromFile("../fonts/bit5x3.ttf");
 
-    // Paused label
-    sf::Text pausedLabel;
-    pausedLabel.setString("Paused");
-    pausedLabel.setFont(font);
-    pausedLabel.setCharacterSize(textSize);
-    pausedLabel.setFillColor(textColor);
-    pausedLabel.setPosition(10, height - textSize - 10);
+    Debug debug;
 
     CellMap cellMap;
     bool paused = true;
@@ -72,6 +63,10 @@ int main()
                     }
                     break;
                 }
+
+                case sf::Event::MouseMoved:
+                    coordsLabel.setString("X: " + std::to_string(event.mouseMove.x) + " Y: " + std::to_string(event.mouseMove.y));
+                    break;
             }
         }
 
@@ -98,6 +93,7 @@ int main()
 
         for (auto &pair : cellMap) pair.second.render(window);
         if (paused && labelVisible) window.draw(pausedLabel);
+        window.draw(coordsLabel);
 
         window.display();
     }
