@@ -6,7 +6,6 @@
 #include <SFML/Graphics.hpp>
 
 #include <unordered_map>
-#include <vector>
 
 const int dx[] = {  -1, 0,  1,  -1, 1,  -1, 0,  1   };
 const int dy[] = {  -1, -1, -1, 0,  0,  1,  1,  1   };
