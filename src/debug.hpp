@@ -6,19 +6,20 @@
 
 class Debug
 {
-sf::Font font;
-sf::Text pausedLabel;
-sf::Text coordsLabel;
+    sf::Vector2i mousePosition;
 
-bool menu = false;
+    sf::Font font;
+    sf::Text pausedLabel;
+    sf::Text coordsLabel;
 
 public:
+    bool menu = false;
+
     Debug()
     {
         font.loadFromFile("../fonts/bit5x3.ttf");
 
         // Paused label
-        sf::Text pausedLabel;
         pausedLabel.setString("Paused");
         pausedLabel.setFont(font);
         pausedLabel.setCharacterSize(textSize);
@@ -26,7 +27,6 @@ public:
         pausedLabel.setPosition(10, height - textSize - 10);
 
         // Coords label
-        sf::Text coordsLabel;
         coordsLabel.setFont(font);
         coordsLabel.setCharacterSize(15);
         coordsLabel.setFillColor(textColor);
@@ -34,4 +34,7 @@ public:
     }
 
     void toggleMenu();
+    void updateCoords(const sf::RenderWindow &window);
+    void updateMenu();
+    void renderMenu(sf::RenderWindow &window);
 };

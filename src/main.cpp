@@ -39,20 +39,20 @@ int main()
         {
             switch (event.type)
             {
-                case sf::Event::Closed                  :   window.close(); break;
+                case sf::Event::Closed                  :   window.close();         break;
                 
                 // Keyboard events
                 case sf::Event::KeyPressed:
                     switch (event.key.code)
                     {
-                        case sf::Keyboard::Escape       :   window.close(); break;
-                        case sf::Keyboard::Space        :   paused = !paused;
+                        case sf::Keyboard::Escape       :   window.close();         break;
+                        case sf::Keyboard::F1           :   debug.toggleMenu();     break;
+                        case sf::Keyboard::Space        :   paused = !paused;       break;
                     }
                     break;
 
                 // Mouse events
                 case sf::Event::MouseButtonPressed:
-                {
                     switch (event.mouseButton.button)
                     {
                         case sf::Mouse::Left:
@@ -62,24 +62,24 @@ int main()
                             break;
                     }
                     break;
-                }
+
 
                 case sf::Event::MouseMoved:
-                    coordsLabel.setString("X: " + std::to_string(event.mouseMove.x) + " Y: " + std::to_string(event.mouseMove.y));
+                    debug.updateCoords(window);
                     break;
             }
         }
 
         // Logic
         const sf::Time timeElapsed = clock.restart();
-        timeSinceBlink += timeElapsed;
+        // timeSinceBlink += timeElapsed;
         timeSinceUpdate += timeElapsed;
 
-        if (timeSinceBlink >= blinkFrequency)
-        {
-            timeSinceBlink = sf::Time::Zero;
-            labelVisible = !labelVisible;
-        }
+        // if (timeSinceBlink >= blinkFrequency)
+        // {
+        //     timeSinceBlink = sf::Time::Zero;
+        //     labelVisible = !labelVisible;
+        // }
 
         while (timeSinceUpdate > updateFrequency)
         {
@@ -92,8 +92,8 @@ int main()
         window.clear();
 
         for (auto &pair : cellMap) pair.second.render(window);
-        if (paused && labelVisible) window.draw(pausedLabel);
-        window.draw(coordsLabel);
+        // if (paused && labelVisible) window.draw(pausedLabel);
+        if (debug.menu) debug.renderMenu(window);
 
         window.display();
     }
