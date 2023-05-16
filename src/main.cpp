@@ -1,5 +1,6 @@
 #include "cell.hpp"
 #include "cellMap.hpp"
+#include "clock.hpp"
 #include "config.hpp"
 #include "debug.hpp"
 
@@ -14,16 +15,6 @@ int main()
     sf::RenderWindow window(videoMode, windowName);
     window.setFramerateLimit(fpsLimit);
     window.setVerticalSyncEnabled(vSync);
-
-    // Game clock
-    sf::Clock clock;
-
-    const sf::Time updateFrequency = sf::seconds(1.0f / ups);
-    sf::Time timeSinceUpdate = sf::Time::Zero;
-
-    const sf::Time blinkFrequency = sf::seconds(1.0f / blinksPerSecond);
-    sf::Time timeSinceBlink = sf::Time::Zero;
-    bool labelVisible = true;
 
     Debug debug;
 
@@ -71,20 +62,11 @@ int main()
         }
 
         // Logic
-        const sf::Time timeElapsed = clock.restart();
-        // timeSinceBlink += timeElapsed;
-        timeSinceUpdate += timeElapsed;
+        Clock::updateClock();
+        debug.updatePausedLabel();
 
-        // if (timeSinceBlink >= blinkFrequency)
-        // {
-        //     timeSinceBlink = sf::Time::Zero;
-        //     labelVisible = !labelVisible;
-        // }
-
-        while (timeSinceUpdate > updateFrequency)
+        while (Clock::gameUpdate())
         {
-            timeSinceUpdate -= updateFrequency;
-
             if (!paused) Cell::updateMap(cellMap);
         }
 
@@ -92,7 +74,7 @@ int main()
         window.clear();
 
         Cell::render(window, cellMap);
-        // if (paused && labelVisible) window.draw(pausedLabel);
+        if (paused && debug.pausedLabelVisible) debug.renderPausedLabel(window);
         if (debug.menu) debug.renderMenu(window);
 
         window.display();

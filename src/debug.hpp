@@ -13,6 +13,7 @@ class Debug
     sf::Text coordsLabel;
 
 public:
+    bool pausedLabelVisible = true;
     bool menu = false;
 
     Debug()
@@ -33,8 +34,11 @@ public:
         coordsLabel.setPosition(10, 10);
     }
 
+    void updatePausedLabel();
+    void renderPausedLabel(sf::RenderWindow &window);
     void toggleMenu();
     void updateCoords(const sf::RenderWindow &window);
     void updateMenu();
     void renderMenu(sf::RenderWindow &window);
+
 };

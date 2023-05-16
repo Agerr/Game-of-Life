@@ -1,8 +1,20 @@
 #include "debug.hpp"
 
+#include "clock.hpp"
+
 #include <SFML/Graphics.hpp>
 
 #include <string>
+
+void Debug::updatePausedLabel()
+{
+    if (Clock::blink()) pausedLabelVisible != pausedLabelVisible;
+}
+
+void Debug::renderPausedLabel(sf::RenderWindow &window)
+{
+    window.draw(pausedLabel);
+}
 
 void Debug::toggleMenu()
 {
@@ -24,7 +36,5 @@ void Debug::renderMenu(sf::RenderWindow &window)
 {
     updateMenu();
 
-    // Paused label
-    const std::string text = coordsLabel.getString();
     window.draw(coordsLabel);
 }
