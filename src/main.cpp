@@ -16,7 +16,7 @@ int main()
     window.setFramerateLimit(fpsLimit);
     window.setVerticalSyncEnabled(vSync);
 
-    Debug debug;
+    Debug::init();
 
     CellMap cellMap;
     bool paused = true;
@@ -37,7 +37,7 @@ int main()
                     switch (event.key.code)
                     {
                         case sf::Keyboard::Escape       :   window.close();         break;
-                        case sf::Keyboard::F1           :   debug.toggleMenu();     break;
+                        case sf::Keyboard::F1           :   Debug::toggleMenu();     break;
                         case sf::Keyboard::Space        :   paused = !paused;       break;
                     }
                     break;
@@ -56,14 +56,14 @@ int main()
 
 
                 case sf::Event::MouseMoved:
-                    debug.updateCoords(window);
+                    Debug::updateCoords(window);
                     break;
             }
         }
 
         // Logic
         Clock::updateClock();
-        debug.updatePausedLabel();
+        Debug::updatePausedLabel();
 
         while (Clock::gameUpdate())
         {
@@ -74,8 +74,8 @@ int main()
         window.clear();
 
         Cell::render(window, cellMap);
-        if (paused && debug.pausedLabelVisible) debug.renderPausedLabel(window);
-        if (debug.menu) debug.renderMenu(window);
+        if (paused && Debug::pausedLabelVisible) Debug::renderPausedLabel(window);
+        if (Debug::menu) Debug::renderMenu(window);
 
         window.display();
     }

@@ -6,6 +6,13 @@
 
 #include <string>
 
+sf::Vector2i Debug::mousePosition;
+sf::Font Debug::font;
+sf::Text Debug::pausedLabel;
+sf::Text Debug::coordsLabel;
+bool Debug::pausedLabelVisible;
+bool Debug::menu;
+
 void Debug::updatePausedLabel()
 {
     if (Clock::blink()) pausedLabelVisible = !pausedLabelVisible;

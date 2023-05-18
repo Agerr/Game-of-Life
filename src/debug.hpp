@@ -6,17 +6,17 @@
 
 class Debug
 {
-    sf::Vector2i mousePosition;
+    static sf::Vector2i mousePosition;
 
-    sf::Font font;
-    sf::Text pausedLabel;
-    sf::Text coordsLabel;
+    static sf::Font font;
+    static sf::Text pausedLabel;
+    static sf::Text coordsLabel;
 
 public:
-    bool pausedLabelVisible = true;
-    bool menu = false;
+    static bool pausedLabelVisible;
+    static bool menu;
 
-    Debug()
+    static void init()
     {
         font.loadFromFile("../fonts/bit5x3.ttf");
 
@@ -32,13 +32,15 @@ public:
         coordsLabel.setCharacterSize(15);
         coordsLabel.setFillColor(textColor);
         coordsLabel.setPosition(10, 10);
+
+        pausedLabelVisible = true;
+        menu = false;
     }
 
-    void updatePausedLabel();
-    void renderPausedLabel(sf::RenderWindow &window);
-    void toggleMenu();
-    void updateCoords(const sf::RenderWindow &window);
-    void updateMenu();
-    void renderMenu(sf::RenderWindow &window);
-
+    static void updatePausedLabel();
+    static void renderPausedLabel(sf::RenderWindow &window);
+    static void toggleMenu();
+    static void updateCoords(const sf::RenderWindow &window);
+    static void updateMenu();
+    static void renderMenu(sf::RenderWindow &window);
 };
