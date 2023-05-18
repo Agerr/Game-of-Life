@@ -8,7 +8,7 @@
 
 void Debug::updatePausedLabel()
 {
-    if (Clock::blink()) pausedLabelVisible != pausedLabelVisible;
+    if (Clock::blink()) pausedLabelVisible = !pausedLabelVisible;
 }
 
 void Debug::renderPausedLabel(sf::RenderWindow &window)

@@ -2,6 +2,12 @@
 
 #include <SFML/Graphics.hpp>
 
+sf::Clock Clock::clock;
+const sf::Time Clock::updateFrequency = sf::seconds(1.0f / ups);
+sf::Time Clock::timeSinceGameUpdate = sf::Time::Zero;
+const sf::Time Clock::blinkFrequency = sf::seconds(1.0f / blinksPerSecond);
+sf::Time Clock::timeSinceBlink = sf::Time::Zero;
+
 void Clock::updateClock()
 {
     const sf::Time timeElapsed = clock.restart();
