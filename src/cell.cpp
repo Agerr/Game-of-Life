@@ -26,10 +26,6 @@ Cell* Cell::getCell(const int& col, const int& row, CellMap& cellMap)
 
 void Cell::toggleCell(const int &col, const int &row, CellMap &cellMap)
 {
-    const int cols = width / cellSize;
-    const int rows = height / cellSize;
-    if (col < 0 || col >= cols || row < 0 || row >= rows) return;
-
     Cell* cellptr = Cell::getCell(col, row, cellMap);
 
     if (cellptr == nullptr)
@@ -98,5 +94,4 @@ void Cell::updateMap(CellMap &cellMap)
 void Cell::render(sf::RenderWindow &window, const CellMap &cellMap)
 {
     for (auto &pair : cellMap) window.draw(pair.second.rect);
-   
 }

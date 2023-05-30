@@ -20,6 +20,7 @@ void Debug::updatePausedLabel()
 
 void Debug::renderPausedLabel(sf::RenderWindow &window)
 {
+    pausedLabel.setPosition(window.mapPixelToCoords(sf::Vector2i(10, height - textSize - 10)));
     window.draw(pausedLabel);
 }
 
@@ -43,5 +44,6 @@ void Debug::renderMenu(sf::RenderWindow &window)
 {
     updateMenu();
 
+    coordsLabel.setPosition(window.mapPixelToCoords(sf::Vector2i(10, 10)));
     window.draw(coordsLabel);
 }

@@ -19,7 +19,11 @@ int main()
     Debug::init();
 
     CellMap cellMap;
-    bool paused = true;
+    bool isPaused = true;
+    bool isDragging = false;
+    sf::Vector2i initialMousePos;
+    sf::Vector2i draggingOffset;
+    sf::Vector2i lastMousePos;
 
     // Game loop
     while (window.isOpen())
@@ -37,8 +41,8 @@ int main()
                     switch (event.key.code)
                     {
                         case sf::Keyboard::Escape       :   window.close();         break;
-                        case sf::Keyboard::F1           :   Debug::toggleMenu();     break;
-                        case sf::Keyboard::Space        :   paused = !paused;       break;
+                        case sf::Keyboard::F1           :   Debug::toggleMenu();    break;
+                        case sf::Keyboard::Space        :   isPaused = !isPaused;   break;
                     }
                     break;
 
@@ -47,15 +51,36 @@ int main()
                     switch (event.mouseButton.button)
                     {
                         case sf::Mouse::Left:
-                            const int pressed_col = event.mouseButton.x / size;
-                            const int pressed_row = event.mouseButton.y / size;
+                            isDragging = true;
+                            initialMousePos = sf::Mouse::getPosition(window);
+                            lastMousePos = initialMousePos;
+
+                            const sf::Vector2f worldPos = window.mapPixelToCoords(initialMousePos);
+                            const int pressed_col = int(worldPos.x / size) - (worldPos.x < 0 ? 1 : 0);
+                            const int pressed_row = int(worldPos.y / size) - (worldPos.y < 0 ? 1 : 0);
                             Cell::toggleCell(pressed_col, pressed_row, cellMap);
                             break;
                     }
                     break;
 
+                case sf::Event::MouseButtonReleased:
+                    if (event.mouseButton.button == sf::Mouse::Left)
+                        isDragging = false;
+                    break;
 
                 case sf::Event::MouseMoved:
+                    if (isDragging)
+                    {
+                        sf::Vector2i currentMousePos = sf::Mouse::getPosition(window);
+                        draggingOffset = currentMousePos - lastMousePos;
+
+                        sf::View view = window.getView();
+                        view.move(-draggingOffset.x, -draggingOffset.y);
+                        window.setView(view);
+
+                        lastMousePos = currentMousePos;
+                    }
+
                     Debug::updateCoords(window);
                     break;
             }
@@ -67,14 +92,14 @@ int main()
 
         while (Clock::gameUpdate())
         {
-            if (!paused) Cell::updateMap(cellMap);
+            if (!isPaused) Cell::updateMap(cellMap);
         }
 
         // Render
         window.clear();
 
         Cell::render(window, cellMap);
-        if (paused && Debug::pausedLabelVisible) Debug::renderPausedLabel(window);
+        if (isPaused && Debug::pausedLabelVisible) Debug::renderPausedLabel(window);
         if (Debug::menu) Debug::renderMenu(window);
 
         window.display();
