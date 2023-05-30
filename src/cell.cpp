@@ -7,6 +7,8 @@
 
 #include <unordered_map>
 
+int Cell::cellSize = size;
+
 const int dx[] = {  -1, 0,  1,  -1, 1,  -1, 0,  1   };
 const int dy[] = {  -1, -1, -1, 0,  0,  1,  1,  1   };
 
@@ -24,8 +26,8 @@ Cell* Cell::getCell(const int& col, const int& row, CellMap& cellMap)
 
 void Cell::toggleCell(const int &col, const int &row, CellMap &cellMap)
 {
-    const int cols = width / size;
-    const int rows = height / size;
+    const int cols = width / cellSize;
+    const int rows = height / cellSize;
     if (col < 0 || col >= cols || row < 0 || row >= rows) return;
 
     Cell* cellptr = Cell::getCell(col, row, cellMap);
