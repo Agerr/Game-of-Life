@@ -10,7 +10,7 @@ class Debug
 
     static sf::Font font;
     static sf::Text pausedLabel;
-    static sf::Text MouseCoordsLabel;
+    static sf::Text mouseCoordsLabel;
 
 public:
     static bool pausedLabelVisible;
@@ -28,10 +28,10 @@ public:
         pausedLabel.setPosition(10, height - textSize - 10);
 
         // Mouse coords label
-        MouseCoordsLabel.setFont(font);
-        MouseCoordsLabel.setCharacterSize(15);
-        MouseCoordsLabel.setFillColor(textColor);
-        MouseCoordsLabel.setPosition(10, 10);
+        mouseCoordsLabel.setFont(font);
+        mouseCoordsLabel.setCharacterSize(15);
+        mouseCoordsLabel.setFillColor(textColor);
+        mouseCoordsLabel.setPosition(10, 10);
 
         pausedLabelVisible = true;
         menu = false;
