@@ -15,10 +15,13 @@ int main()
     sf::RenderWindow window(videoMode, windowName);
     window.setFramerateLimit(fpsLimit);
     window.setVerticalSyncEnabled(vSync);
+    
+    sf::View view = window.getView();
 
     Debug::init();
 
     CellMap cellMap;
+
     bool isPaused = true;
     bool leftPressed = false;
     sf::Vector2i lastMousePos;
@@ -76,7 +79,6 @@ int main()
                         sf::Vector2i currentMousePos = sf::Mouse::getPosition(window);
                         draggingOffset = currentMousePos - lastMousePos;
 
-                        sf::View view = window.getView();
                         view.move(-draggingOffset.x, -draggingOffset.y);
                         window.setView(view);
 
