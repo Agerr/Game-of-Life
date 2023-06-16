@@ -20,10 +20,9 @@ int main()
 
     CellMap cellMap;
     bool isPaused = true;
-    bool isDragging = false;
-    sf::Vector2i initialMousePos;
-    sf::Vector2i draggingOffset;
+    bool leftPressed = false;
     sf::Vector2i lastMousePos;
+    sf::Vector2i draggingOffset;
 
     // Game loop
     while (window.isOpen())
@@ -51,11 +50,10 @@ int main()
                     switch (event.mouseButton.button)
                     {
                         case sf::Mouse::Left:
-                            isDragging = true;
-                            initialMousePos = sf::Mouse::getPosition(window);
-                            lastMousePos = initialMousePos;
+                            leftPressed = true;
+                            lastMousePos = sf::Mouse::getPosition(window);
 
-                            const sf::Vector2f worldPos = window.mapPixelToCoords(initialMousePos);
+                            const sf::Vector2f worldPos = window.mapPixelToCoords(lastMousePos);
                             const int pressed_col = int(worldPos.x / size) - (worldPos.x < 0 ? 1 : 0);
                             const int pressed_row = int(worldPos.y / size) - (worldPos.y < 0 ? 1 : 0);
                             Cell::toggleCell(pressed_col, pressed_row, cellMap);
@@ -67,13 +65,13 @@ int main()
                     switch (event.mouseButton.button)
                     {
                         case sf::Mouse::Left:
-                            isDragging = false;
+                            leftPressed = false;
                             break;
                     }
                     break;
 
                 case sf::Event::MouseMoved:
-                    if (isDragging)
+                    if (leftPressed)
                     {
                         sf::Vector2i currentMousePos = sf::Mouse::getPosition(window);
                         draggingOffset = currentMousePos - lastMousePos;
