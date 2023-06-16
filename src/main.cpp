@@ -87,8 +87,7 @@ int main()
                         sf::Vector2i currentMousePos = sf::Mouse::getPosition(window);
                         draggingOffset = currentMousePos - lastMousePos;
 
-                        view.move(-draggingOffset.x, -draggingOffset.y);
-                        window.setView(view);
+                        view.move(-draggingOffset.x, -draggingOffset.y);                     
 
                         lastMousePos = currentMousePos;
                     }
@@ -109,6 +108,7 @@ int main()
 
         // Render
         window.clear();
+        window.setView(view);
 
         Cell::render(window, cellMap);
         if (isPaused && Debug::pausedLabelVisible) Debug::renderPausedLabel(window);
