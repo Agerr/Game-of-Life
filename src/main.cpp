@@ -4,6 +4,8 @@
 #include "config.hpp"
 #include "debug.hpp"
 
+#include <iostream>
+
 #include <SFML/Graphics.hpp>
 
 int main()
@@ -15,7 +17,7 @@ int main()
     sf::RenderWindow window(videoMode, windowName);
     window.setFramerateLimit(fpsLimit);
     window.setVerticalSyncEnabled(vSync);
-    
+
     sf::View view = window.getView();
 
     Debug::init();
@@ -24,6 +26,7 @@ int main()
 
     bool isPaused = true;
     bool leftPressed = false;
+    sf::Vector2i initialMousePos;
     sf::Vector2i lastMousePos;
     sf::Vector2i draggingOffset;
 
@@ -50,16 +53,13 @@ int main()
 
                 // Mouse events
                 case sf::Event::MouseButtonPressed:
+                    initialMousePos = sf::Mouse::getPosition(window);
+                    lastMousePos = initialMousePos;
+
                     switch (event.mouseButton.button)
                     {
                         case sf::Mouse::Left:
                             leftPressed = true;
-                            lastMousePos = sf::Mouse::getPosition(window);
-
-                            const sf::Vector2f worldPos = window.mapPixelToCoords(lastMousePos);
-                            const int pressed_col = int(worldPos.x / size) - (worldPos.x < 0 ? 1 : 0);
-                            const int pressed_row = int(worldPos.y / size) - (worldPos.y < 0 ? 1 : 0);
-                            Cell::toggleCell(pressed_col, pressed_row, cellMap);
                             break;
                     }
                     break;
@@ -69,6 +69,14 @@ int main()
                     {
                         case sf::Mouse::Left:
                             leftPressed = false;
+                            
+                            if (initialMousePos - lastMousePos == sf::Vector2i(0, 0))
+                            {
+                                const sf::Vector2f worldPos = window.mapPixelToCoords(lastMousePos);
+                                const int pressed_col = int(worldPos.x / size) - (worldPos.x < 0 ? 1 : 0);
+                                const int pressed_row = int(worldPos.y / size) - (worldPos.y < 0 ? 1 : 0);
+                                Cell::toggleCell(pressed_col, pressed_row, cellMap);
+                            }
                             break;
                     }
                     break;
