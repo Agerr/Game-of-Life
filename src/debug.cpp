@@ -6,9 +6,10 @@
 
 #include <string>
 
-sf::Vector2i Debug::mousePosition;
+sf::Vector2i Debug::mousePos;
 sf::Font Debug::font;
 sf::Text Debug::pausedLabel;
+sf::Text Debug::worldCoordsLabel;
 sf::Text Debug::mouseCoordsLabel;
 bool Debug::pausedLabelVisible;
 bool Debug::menu;
@@ -31,19 +32,26 @@ void Debug::toggleMenu()
 
 void Debug::updateCoords(const sf::RenderWindow &window)
 {
-    mousePosition = sf::Mouse::getPosition(window);
+    mousePos = sf::Mouse::getPosition(window);
 }
 
-void Debug::updateMenu()
+void Debug::updateMenu(const sf::RenderWindow &window)
 {
-    const std::string coordsString = "Mouse     X: " + std::to_string(mousePosition.x) + " Y: " + std::to_string(mousePosition.y);
-    mouseCoordsLabel.setString(coordsString);
+    const sf::Vector2f worldPos = window.mapPixelToCoords(mousePos);
+    const std::string worldCoordsString = "World    X: " + std::to_string(int(worldPos.x)) + " Y: " + std::to_string(int(worldPos.y));
+    worldCoordsLabel.setString(worldCoordsString);
+
+    const std::string mouseCoordsString = "Mouse    X: " + std::to_string(mousePos.x) + " Y: " + std::to_string(mousePos.y);
+    mouseCoordsLabel.setString(mouseCoordsString);
 }
 
 void Debug::renderMenu(sf::RenderWindow &window)
 {
-    updateMenu();
+    updateMenu(window);
 
-    mouseCoordsLabel.setPosition(window.mapPixelToCoords(sf::Vector2i(10, 10)));
+    worldCoordsLabel.setPosition(window.mapPixelToCoords(sf::Vector2i(10, 10)));
+    mouseCoordsLabel.setPosition(window.mapPixelToCoords(sf::Vector2i(10, 30)));
+
+    window.draw(worldCoordsLabel);
     window.draw(mouseCoordsLabel);
 }

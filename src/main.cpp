@@ -20,7 +20,7 @@ int main()
 
     sf::View view = window.getView();
 
-    Debug::init();
+    Debug::init(window);
 
     CellMap cellMap;
 
@@ -69,7 +69,7 @@ int main()
                     {
                         case sf::Mouse::Left:
                             leftPressed = false;
-                            
+
                             if (initialMousePos - lastMousePos == sf::Vector2i(0, 0))
                             {
                                 const sf::Vector2f worldPos = window.mapPixelToCoords(lastMousePos);
