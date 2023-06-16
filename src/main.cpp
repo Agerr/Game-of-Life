@@ -64,8 +64,12 @@ int main()
                     break;
 
                 case sf::Event::MouseButtonReleased:
-                    if (event.mouseButton.button == sf::Mouse::Left)
-                        isDragging = false;
+                    switch (event.mouseButton.button)
+                    {
+                        case sf::Mouse::Left:
+                            isDragging = false;
+                            break;
+                    }
                     break;
 
                 case sf::Event::MouseMoved:
