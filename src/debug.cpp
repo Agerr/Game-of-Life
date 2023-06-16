@@ -9,7 +9,7 @@
 sf::Vector2i Debug::mousePosition;
 sf::Font Debug::font;
 sf::Text Debug::pausedLabel;
-sf::Text Debug::coordsLabel;
+sf::Text Debug::MouseCoordsLabel;
 bool Debug::pausedLabelVisible;
 bool Debug::menu;
 
@@ -36,14 +36,14 @@ void Debug::updateCoords(const sf::RenderWindow &window)
 
 void Debug::updateMenu()
 {
-    const std::string coordsString = "X: " + std::to_string(mousePosition.x) + " Y: " + std::to_string(mousePosition.y);
-    coordsLabel.setString(coordsString);
+    const std::string coordsString = "Mouse     X: " + std::to_string(mousePosition.x) + " Y: " + std::to_string(mousePosition.y);
+    MouseCoordsLabel.setString(coordsString);
 }
 
 void Debug::renderMenu(sf::RenderWindow &window)
 {
     updateMenu();
 
-    coordsLabel.setPosition(window.mapPixelToCoords(sf::Vector2i(10, 10)));
-    window.draw(coordsLabel);
+    MouseCoordsLabel.setPosition(window.mapPixelToCoords(sf::Vector2i(10, 10)));
+    window.draw(MouseCoordsLabel);
 }
