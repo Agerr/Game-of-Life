@@ -4,9 +4,9 @@
 #include "config.hpp"
 #include "debug.hpp"
 
-#include <iostream>
-
 #include <SFML/Graphics.hpp>
+
+#include <iostream>
 
 int main()
 {
@@ -18,17 +18,18 @@ int main()
     window.setFramerateLimit(fpsLimit);
     window.setVerticalSyncEnabled(vSync);
 
-    sf::View view = window.getView();
+    sf::View view = window.getDefaultView();
 
-    Debug::init(window);
+    Debug::init(sf::Mouse::getPosition(window));
 
     CellMap cellMap;
 
     bool isPaused = true;
     bool leftPressed = false;
+    float zoomFactor = 1;
     sf::Vector2i initialMousePos;
+    sf::Vector2i currentMousePos;
     sf::Vector2i lastMousePos;
-    sf::Vector2i draggingOffset;
 
     // Game loop
     while (window.isOpen())
@@ -80,19 +81,39 @@ int main()
                             break;
                     }
                     break;
-
                 case sf::Event::MouseMoved:
+                    currentMousePos = sf::Mouse::getPosition(window);
+
                     if (leftPressed)
                     {
-                        sf::Vector2i currentMousePos = sf::Mouse::getPosition(window);
-                        draggingOffset = currentMousePos - lastMousePos;
-
-                        view.move(-draggingOffset.x, -draggingOffset.y);                     
-
-                        lastMousePos = currentMousePos;
+                        const sf::Vector2f draggingOffset = sf::Vector2f(currentMousePos - lastMousePos);
+                        view.move(-draggingOffset.x / zoomFactor, -draggingOffset.y / zoomFactor);                     
                     }
 
-                    Debug::updateCoords(window);
+                    lastMousePos = currentMousePos;
+                    Debug::updateCoords(lastMousePos);
+                    break;
+
+                case sf::Event::MouseWheelScrolled:
+                    const sf::Vector2f worldPosBeforeZoom = window.mapPixelToCoords(lastMousePos, view);
+
+                    if (event.mouseWheelScroll.delta > 0)
+                    {
+                        if (zoomFactor < maxZoom) view.zoom(1 - zoomStrength);
+                    }
+                    else
+                    {
+                        if (zoomFactor > minZoom) view.zoom(1 + zoomStrength);
+                    }
+
+                    zoomFactor = window.getSize().x / view.getSize().x;
+
+                    if (zoomFactor > maxZoom) view.zoom(zoomFactor / maxZoom);
+                    else if (zoomFactor < minZoom) view.zoom(zoomFactor / minZoom);
+                    zoomFactor = window.getSize().x / view.getSize().x;
+
+                    const sf::Vector2f worldPosAfterZoom = window.mapPixelToCoords(lastMousePos, view);
+                    view.move(worldPosBeforeZoom - worldPosAfterZoom);
                     break;
             }
         }
@@ -100,6 +121,7 @@ int main()
         // Logic
         Clock::updateClock();
         Debug::updatePausedLabel();
+        if (Debug::menu) Debug::updateMenu(window, zoomFactor);
 
         while (Clock::gameUpdate())
         {
@@ -108,11 +130,15 @@ int main()
 
         // Render
         window.clear();
-        window.setView(view);
 
-        Cell::render(window, cellMap);
+        // Fixed
+        window.setView(window.getDefaultView());
         if (isPaused && Debug::pausedLabelVisible) Debug::renderPausedLabel(window);
         if (Debug::menu) Debug::renderMenu(window);
+
+        // Grid
+        window.setView(view);
+        Cell::render(window, cellMap);
 
         window.display();
     }

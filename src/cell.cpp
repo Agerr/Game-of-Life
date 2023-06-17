@@ -7,8 +7,6 @@
 
 #include <unordered_map>
 
-int Cell::cellSize = size;
-
 const int dx[] = {  -1, 0,  1,  -1, 1,  -1, 0,  1   };
 const int dy[] = {  -1, -1, -1, 0,  0,  1,  1,  1   };
 
