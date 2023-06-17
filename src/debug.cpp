@@ -38,10 +38,10 @@ void Debug::updateCoords(const sf::RenderWindow &window)
 void Debug::updateMenu(const sf::RenderWindow &window)
 {
     const sf::Vector2f worldPos = window.mapPixelToCoords(mousePos);
-    const std::string worldCoordsString = "World    X: " + std::to_string(int(worldPos.x)) + " Y: " + std::to_string(int(worldPos.y));
+    const std::string worldCoordsString = "World\tX: " + std::to_string(int(worldPos.x)) + "\tY: " + std::to_string(int(worldPos.y));
     worldCoordsLabel.setString(worldCoordsString);
 
-    const std::string mouseCoordsString = "Mouse    X: " + std::to_string(mousePos.x) + " Y: " + std::to_string(mousePos.y);
+    const std::string mouseCoordsString = "Mouse\tX: " + std::to_string(mousePos.x) + "\tY: " + std::to_string(mousePos.y);
     mouseCoordsLabel.setString(mouseCoordsString);
 }
 
