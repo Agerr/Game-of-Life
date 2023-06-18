@@ -6,7 +6,6 @@
 #include <SFML/Graphics.hpp>
 
 #include <unordered_map>
-#include <vector>
 
 const int dx[] = {  -1, 0,  1,  -1, 1,  -1, 0,  1   };
 const int dy[] = {  -1, -1, -1, 0,  0,  1,  1,  1   };
@@ -25,10 +24,6 @@ Cell* Cell::getCell(const int& col, const int& row, CellMap& cellMap)
 
 void Cell::toggleCell(const int &col, const int &row, CellMap &cellMap)
 {
-    const int cols = width / size;
-    const int rows = height / size;
-    if (col < 0 || col >= cols || row < 0 || row >= rows) return;
-
     Cell* cellptr = Cell::getCell(col, row, cellMap);
 
     if (cellptr == nullptr)
@@ -94,7 +89,7 @@ void Cell::updateMap(CellMap &cellMap)
     cellMap = newCellMap;
 }
 
-void Cell::render(sf::RenderWindow &window)
+void Cell::render(sf::RenderWindow &window, const CellMap &cellMap)
 {
-    window.draw(rect);
+    for (auto &pair : cellMap) window.draw(pair.second.rect);
 }

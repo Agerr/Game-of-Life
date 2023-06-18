@@ -1,11 +1,15 @@
 #include "cell.hpp"
 #include "cellMap.hpp"
+#include "clock.hpp"
 #include "config.hpp"
+#include "debug.hpp"
 
 #include <SFML/Graphics.hpp>
 
+#include <iostream>
+
 int main()
-{   
+{
     // Window
     sf::VideoMode videoMode = sf::VideoMode(width, height);
     if (fullscreen) videoMode = sf::VideoMode::getFullscreenModes()[0];
@@ -14,29 +18,18 @@ int main()
     window.setFramerateLimit(fpsLimit);
     window.setVerticalSyncEnabled(vSync);
 
-    // Game clock
-    sf::Clock clock;
-    const sf::Time updateFrequency = sf::seconds(1.0f / ups);
-    sf::Time timeSinceUpdate = sf::Time::Zero;
+    sf::View view = window.getDefaultView();
 
-    sf::Time timeSinceBlink = sf::Time::Zero;
-    const sf::Time blinkFrequency = sf::seconds(1.0f / blinksPerSecond);
-    bool labelVisible = true;
-    
-    // Main font
-    sf::Font font;
-    font.loadFromFile("../fonts/bit5x3.ttf");
-
-    // Paused label
-    sf::Text pausedLabel;
-    pausedLabel.setString("Paused");
-    pausedLabel.setFont(font);
-    pausedLabel.setCharacterSize(textSize);
-    pausedLabel.setFillColor(sf::Color(96, 96, 96, 191));
-    pausedLabel.setPosition(10, height - textSize - 10);
+    Debug::init(sf::Mouse::getPosition(window));
 
     CellMap cellMap;
-    bool paused = true;
+
+    bool isPaused = true;
+    bool leftPressed = false;
+    float zoomFactor = 1;
+    sf::Vector2i initialMousePos;
+    sf::Vector2i currentMousePos;
+    sf::Vector2i lastMousePos;
 
     // Game loop
     while (window.isOpen())
@@ -47,56 +40,105 @@ int main()
         {
             switch (event.type)
             {
-                case sf::Event::Closed                  :   window.close(); break;
+                case sf::Event::Closed                  :   window.close();         break;
                 
                 // Keyboard events
                 case sf::Event::KeyPressed:
                     switch (event.key.code)
                     {
-                        case sf::Keyboard::Escape       :   window.close(); break;
-                        case sf::Keyboard::Space        :   paused = !paused;
+                        case sf::Keyboard::Escape       :   window.close();         break;
+                        case sf::Keyboard::F1           :   Debug::toggleMenu();    break;
+                        case sf::Keyboard::Space        :   isPaused = !isPaused;   break;
                     }
                     break;
 
                 // Mouse events
                 case sf::Event::MouseButtonPressed:
-                {
+                    initialMousePos = sf::Mouse::getPosition(window);
+                    lastMousePos = initialMousePos;
+
                     switch (event.mouseButton.button)
                     {
                         case sf::Mouse::Left:
-                            const int pressed_col = event.mouseButton.x / size;
-                            const int pressed_row = event.mouseButton.y / size;
-                            Cell::toggleCell(pressed_col, pressed_row, cellMap);
+                            leftPressed = true;
                             break;
                     }
                     break;
-                }
+
+                case sf::Event::MouseButtonReleased:
+                    switch (event.mouseButton.button)
+                    {
+                        case sf::Mouse::Left:
+                            leftPressed = false;
+
+                            if (initialMousePos - lastMousePos == sf::Vector2i(0, 0))
+                            {
+                                const sf::Vector2f worldPos = window.mapPixelToCoords(lastMousePos);
+                                const int pressed_col = int(worldPos.x / size) - (worldPos.x < 0 ? 1 : 0);
+                                const int pressed_row = int(worldPos.y / size) - (worldPos.y < 0 ? 1 : 0);
+                                Cell::toggleCell(pressed_col, pressed_row, cellMap);
+                            }
+                            break;
+                    }
+                    break;
+                case sf::Event::MouseMoved:
+                    currentMousePos = sf::Mouse::getPosition(window);
+
+                    if (leftPressed)
+                    {
+                        const sf::Vector2f draggingOffset = sf::Vector2f(currentMousePos - lastMousePos);
+                        view.move(-draggingOffset.x / zoomFactor, -draggingOffset.y / zoomFactor);                     
+                    }
+
+                    lastMousePos = currentMousePos;
+                    Debug::updateCoords(lastMousePos);
+                    break;
+
+                case sf::Event::MouseWheelScrolled:
+                    const sf::Vector2f worldPosBeforeZoom = window.mapPixelToCoords(lastMousePos, view);
+
+                    if (event.mouseWheelScroll.delta > 0)
+                    {
+                        if (zoomFactor < maxZoom) view.zoom(1 - zoomStrength);
+                    }
+                    else
+                    {
+                        if (zoomFactor > minZoom) view.zoom(1 + zoomStrength);
+                    }
+
+                    zoomFactor = window.getSize().x / view.getSize().x;
+
+                    if (zoomFactor > maxZoom) view.zoom(zoomFactor / maxZoom);
+                    else if (zoomFactor < minZoom) view.zoom(zoomFactor / minZoom);
+                    zoomFactor = window.getSize().x / view.getSize().x;
+
+                    const sf::Vector2f worldPosAfterZoom = window.mapPixelToCoords(lastMousePos, view);
+                    view.move(worldPosBeforeZoom - worldPosAfterZoom);
+                    break;
             }
         }
 
         // Logic
-        const sf::Time timeElapsed = clock.restart();
-        timeSinceBlink += timeElapsed;
-        timeSinceUpdate += timeElapsed;
+        Clock::updateClock();
+        Debug::updatePausedLabel();
+        if (Debug::menu) Debug::updateMenu(window, zoomFactor);
 
-        if (timeSinceBlink >= blinkFrequency)
+        while (Clock::gameUpdate())
         {
-            timeSinceBlink = sf::Time::Zero;
-            labelVisible = !labelVisible;
-        }
-
-        while (timeSinceUpdate > updateFrequency)
-        {
-            timeSinceUpdate -= updateFrequency;
-
-            if (!paused) Cell::updateMap(cellMap);
+            if (!isPaused) Cell::updateMap(cellMap);
         }
 
         // Render
         window.clear();
 
-        for (auto &pair : cellMap) pair.second.render(window);
-        if (paused && labelVisible) window.draw(pausedLabel);
+        // Fixed
+        window.setView(window.getDefaultView());
+        if (isPaused && Debug::pausedLabelVisible) Debug::renderPausedLabel(window);
+        if (Debug::menu) Debug::renderMenu(window);
+
+        // Grid
+        window.setView(view);
+        Cell::render(window, cellMap);
 
         window.display();
     }
