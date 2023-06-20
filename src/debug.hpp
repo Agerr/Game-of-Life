@@ -1,5 +1,7 @@
 #pragma once
 
+#include "config.hpp"
+
 #include <SFML/Graphics.hpp>
 
 class Debug
