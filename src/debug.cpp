@@ -9,20 +9,27 @@
 #include <cmath>
 #include <string>
 
+sf::Vector2i Debug::gridPos;
+sf::Vector2f Debug::worldPos;
 sf::Vector2i Debug::mousePos;
+
 sf::Font Debug::font;
 sf::Text Debug::pausedLabel;
-sf::Text Debug::gridCoordsLabel;
+sf::Text Debug::gridPosLabel;
 sf::Text Debug::zoomFactorLabel;
-sf::Text Debug::worldCoordsLabel;
-sf::Text Debug::mouseCoordsLabel;
+sf::Text Debug::worldPosLabel;
+sf::Text Debug::mousePosLabel;
+
 bool Debug::pausedLabelVisible;
 bool Debug::menu;
 
-float roundToPrecision(float number, int precision)
+std::string roundToDecimalPlaces(float number, int places)
 {
-    float factor = std::pow(10, precision);
-    return std::round(number * factor) / factor;
+    const int factor = std::pow(10, places);
+    const std::string rounded = std::to_string(std::round(number * factor) / factor);
+    const std::string roundedSubstring = rounded.substr(0, rounded.find('.') + places + (places > 0 ? 1 : 0));
+    
+    return roundedSubstring;
 }
 
 void Debug::updatePausedLabel()
@@ -40,35 +47,31 @@ void Debug::toggleMenu()
     menu = !menu;
 }
 
-void Debug::updateCoords(const sf::Vector2i &lastMousePos)
+void Debug::updatePositions(const sf::RenderWindow &window)
 {
-    mousePos = lastMousePos;
+    mousePos = sf::Mouse::getPosition(window);
+    worldPos = window.mapPixelToCoords(mousePos);
+    gridPos = sf::Vector2i(int(worldPos.x / size) - (worldPos.x < 0 ? 1 : 0), int(worldPos.y / size) - (worldPos.y < 0 ? 1 : 0));
 }
-void Debug::updateMenu(const sf::RenderWindow &window, const float &zoomFactor)
+void Debug::updateMenu(const float &zoomFactor)
 {
-    const sf::Vector2f worldPos = window.mapPixelToCoords(mousePos);
+    const std::string gridPosString = "Grid\tX: " + std::to_string(gridPos.x) + "\tY: " + std::to_string(gridPos.y);
+    gridPosLabel.setString(gridPosString);
 
-    const int pressed_col = int(worldPos.x / size) - (worldPos.x < 0 ? 1 : 0);
-    const int pressed_row = int(worldPos.y / size) - (worldPos.y < 0 ? 1 : 0);
-    const std::string gridCoordsString = "Grid\tX: " + std::to_string(pressed_col) + "\tY: " + std::to_string(pressed_row);
-    gridCoordsLabel.setString(gridCoordsString);
-
-    const std::string zoomFactorRounded = std::to_string(roundToPrecision(zoomFactor, 2));
-    const std::string zoomFactorSubtring = zoomFactorRounded.substr(0, zoomFactorRounded.find('.') + 3);
-    const std::string zoomFactorString = "Zoom\t" + zoomFactorSubtring + "x";
+    const std::string zoomFactorString = "Zoom\t" + roundToDecimalPlaces(zoomFactor, 2) + "x";
     zoomFactorLabel.setString(zoomFactorString);
 
-    const std::string worldCoordsString = "World\tX: " + std::to_string(int(worldPos.x)) + "\tY: " + std::to_string(int(worldPos.y));
-    worldCoordsLabel.setString(worldCoordsString);
+    const std::string worldPosString = "World\tX: " + roundToDecimalPlaces(worldPos.x, 0) + "\tY: " + roundToDecimalPlaces(worldPos.y, 0);
+    worldPosLabel.setString(worldPosString);
 
-    const std::string mouseCoordsString = "Mouse\tX: " + std::to_string(mousePos.x) + "\tY: " + std::to_string(mousePos.y);
-    mouseCoordsLabel.setString(mouseCoordsString);
+    const std::string mousePosString = "Mouse\tX: " + std::to_string(mousePos.x) + "\tY: " + std::to_string(mousePos.y);
+    mousePosLabel.setString(mousePosString);
 }
 
 void Debug::renderMenu(sf::RenderWindow &window)
 {
-    window.draw(gridCoordsLabel);
+    window.draw(gridPosLabel);
     window.draw(zoomFactorLabel);
-    window.draw(worldCoordsLabel);
-    window.draw(mouseCoordsLabel);
+    window.draw(worldPosLabel);
+    window.draw(mousePosLabel);
 }

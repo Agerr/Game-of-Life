@@ -6,8 +6,6 @@
 
 #include <SFML/Graphics.hpp>
 
-#include <iostream>
-
 int main()
 {
     // Window
@@ -20,7 +18,8 @@ int main()
 
     sf::View view = window.getDefaultView();
 
-    Debug::init(sf::Mouse::getPosition(window));
+    Debug::init();
+    Debug::updatePositions(window);
 
     CellMap cellMap;
 
@@ -73,14 +72,12 @@ int main()
 
                             if (initialMousePos - lastMousePos == sf::Vector2i(0, 0))
                             {
-                                const sf::Vector2f worldPos = window.mapPixelToCoords(lastMousePos);
-                                const int pressed_col = int(worldPos.x / size) - (worldPos.x < 0 ? 1 : 0);
-                                const int pressed_row = int(worldPos.y / size) - (worldPos.y < 0 ? 1 : 0);
-                                Cell::toggleCell(pressed_col, pressed_row, cellMap);
+                                Cell::toggleCell(Debug::gridPos.x, Debug::gridPos.y, cellMap);
                             }
                             break;
                     }
                     break;
+
                 case sf::Event::MouseMoved:
                     currentMousePos = sf::Mouse::getPosition(window);
 
@@ -91,7 +88,7 @@ int main()
                     }
 
                     lastMousePos = currentMousePos;
-                    Debug::updateCoords(lastMousePos);
+                    Debug::updatePositions(window);
                     break;
 
                 case sf::Event::MouseWheelScrolled:
@@ -121,7 +118,7 @@ int main()
         // Logic
         Clock::updateClock();
         Debug::updatePausedLabel();
-        if (Debug::menu) Debug::updateMenu(window, zoomFactor);
+        if (Debug::menu) Debug::updateMenu(zoomFactor);
 
         while (Clock::gameUpdate())
         {
