@@ -10,6 +10,7 @@ class Debug
     static sf::Text pausedLabel;
     static sf::Text gridPosLabel;
     static sf::Text zoomFactorLabel;
+    static sf::Text cellCountLabel;
     static sf::Text worldPosLabel;
     static sf::Text mousePosLabel;
 
@@ -41,15 +42,20 @@ public:
         zoomFactorLabel.setFillColor(textColor);
         zoomFactorLabel.setPosition(10, 40);
 
+        cellCountLabel.setFont(font);
+        cellCountLabel.setCharacterSize(15);
+        cellCountLabel.setFillColor(textColor);
+        cellCountLabel.setPosition(10, 70);
+
         worldPosLabel.setFont(font);
         worldPosLabel.setCharacterSize(15);
         worldPosLabel.setFillColor(textColor);
-        worldPosLabel.setPosition(10, 70);
+        worldPosLabel.setPosition(10, 130);
 
         mousePosLabel.setFont(font);
         mousePosLabel.setCharacterSize(15);
         mousePosLabel.setFillColor(textColor);
-        mousePosLabel.setPosition(10, 100);
+        mousePosLabel.setPosition(10, 160);
 
         pausedLabelVisible = true;
         menu = false;

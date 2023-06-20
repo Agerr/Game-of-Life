@@ -118,14 +118,13 @@ int main()
         // Render
         window.clear();
 
-        // Fixed
+        Cell::render(window);
+
+        // Fixed view
         window.setView(window.getDefaultView());
         if (isPaused && Debug::pausedLabelVisible) Debug::renderPausedLabel(window);
         if (Debug::menu) Debug::renderMenu(window);
-
-        // Grid
         window.setView(view);
-        Cell::render(window);
 
         window.display();
     }

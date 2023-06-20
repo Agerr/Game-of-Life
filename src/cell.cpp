@@ -9,6 +9,11 @@
 
 CellMap Cell::cellMap;
 
+int Cell::getCount()
+{
+    return cellMap.size();
+}
+
 Cell* Cell::getCell(const sf::Vector2i &gridPos)
 {
     auto it = cellMap.find(gridPos);

@@ -1,5 +1,6 @@
 #include "debug.hpp"
 
+#include "cell.hpp"
 #include "clock.hpp"
 #include "config.hpp"
 
@@ -16,6 +17,7 @@ sf::Font Debug::font;
 sf::Text Debug::pausedLabel;
 sf::Text Debug::gridPosLabel;
 sf::Text Debug::zoomFactorLabel;
+sf::Text Debug::cellCountLabel;
 sf::Text Debug::worldPosLabel;
 sf::Text Debug::mousePosLabel;
 
@@ -60,6 +62,9 @@ void Debug::updateMenu(const float &zoomFactor)
     const std::string zoomFactorString = "Zoom\t" + roundToDecimalPlaces(zoomFactor, 2) + "x";
     zoomFactorLabel.setString(zoomFactorString);
 
+    const std::string cellCountString = "Cells\t" + std::to_string(Cell::getCount());
+    cellCountLabel.setString(cellCountString);
+
     const std::string worldPosString = "World\tX: " + roundToDecimalPlaces(worldPos.x, 0) + "\tY: " + roundToDecimalPlaces(worldPos.y, 0);
     worldPosLabel.setString(worldPosString);
 
@@ -71,6 +76,7 @@ void Debug::renderMenu(sf::RenderWindow &window)
 {
     window.draw(gridPosLabel);
     window.draw(zoomFactorLabel);
+    window.draw(cellCountLabel);
     window.draw(worldPosLabel);
     window.draw(mousePosLabel);
 }

@@ -27,6 +27,7 @@ public:
         rect.setFillColor(sf::Color::White);
     }
 
+    static int getCount();
     static Cell* getCell(const sf::Vector2i &gridPos);
     static void toggleCell(const sf::Vector2i &gridPos, CellMap *cellMap);
     static int neighbourCount(const sf::Vector2i &gridPos);
