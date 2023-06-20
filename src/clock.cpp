@@ -1,5 +1,7 @@
 #include "clock.hpp"
 
+#include "config.hpp"
+
 #include <SFML/Graphics.hpp>
 
 sf::Clock Clock::clock;
