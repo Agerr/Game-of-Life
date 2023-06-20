@@ -1,5 +1,4 @@
 #include "cell.hpp"
-#include "cellMap.hpp"
 #include "clock.hpp"
 #include "config.hpp"
 #include "debug.hpp"
@@ -20,8 +19,6 @@ int main()
 
     Debug::init();
     Debug::updatePositions(window);
-
-    CellMap cellMap;
 
     bool isPaused = true;
     bool leftPressed = false;
@@ -71,9 +68,7 @@ int main()
                             leftPressed = false;
 
                             if (initialMousePos - lastMousePos == sf::Vector2i(0, 0))
-                            {
-                                Cell::toggleCell(Debug::gridPos, cellMap);
-                            }
+                                Cell::toggleCell(Debug::gridPos, nullptr);
                             break;
                     }
                     break;
@@ -94,19 +89,16 @@ int main()
                 case sf::Event::MouseWheelScrolled:
                     const sf::Vector2f worldPosBeforeZoom = window.mapPixelToCoords(lastMousePos, view);
 
-                    if (event.mouseWheelScroll.delta > 0)
-                    {
-                        if (zoomFactor < maxZoom) view.zoom(1 - zoomStrength);
-                    }
-                    else
-                    {
-                        if (zoomFactor > minZoom) view.zoom(1 + zoomStrength);
-                    }
+                    if (event.mouseWheelScroll.delta > 0 && zoomFactor < maxZoom)
+                        view.zoom(1 - zoomStrength);
+                    else if (event.mouseWheelScroll.delta < 0 && zoomFactor > minZoom)
+                        view.zoom(1 + zoomStrength);
 
                     zoomFactor = window.getSize().x / view.getSize().x;
-
-                    if (zoomFactor > maxZoom) view.zoom(zoomFactor / maxZoom);
-                    else if (zoomFactor < minZoom) view.zoom(zoomFactor / minZoom);
+                    if (zoomFactor > maxZoom)
+                        view.zoom(zoomFactor / maxZoom);
+                    else if (zoomFactor < minZoom)
+                        view.zoom(zoomFactor / minZoom);
                     zoomFactor = window.getSize().x / view.getSize().x;
 
                     const sf::Vector2f worldPosAfterZoom = window.mapPixelToCoords(lastMousePos, view);
@@ -121,9 +113,7 @@ int main()
         if (Debug::menu) Debug::updateMenu(zoomFactor);
 
         while (Clock::gameUpdate())
-        {
-            if (!isPaused) Cell::updateMap(cellMap);
-        }
+            if (!isPaused) Cell::updateMap();
 
         // Render
         window.clear();
@@ -135,7 +125,7 @@ int main()
 
         // Grid
         window.setView(view);
-        Cell::render(window, cellMap);
+        Cell::render(window);
 
         window.display();
     }

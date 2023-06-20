@@ -23,3 +23,5 @@ const float             maxZoom                     =       10;
 const int               underpopulation_bound       =       2;
 const int               overpopulation_bound        =       3;
 const int               reproduction_bound          =       3;
+const int               dx[]                        =       {  -1, 0,  1,  -1, 1,  -1, 0,  1   };
+const int               dy[]                        =       {  -1, -1, -1, 0,  0,  1,  1,  1   };

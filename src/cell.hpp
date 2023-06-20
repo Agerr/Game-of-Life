@@ -9,6 +9,8 @@
 
 class Cell
 {
+    static CellMap cellMap;
+
     sf::RectangleShape rect;
 
 public:
@@ -25,10 +27,10 @@ public:
         rect.setFillColor(sf::Color::White);
     }
 
-    static Cell* getCell(const sf::Vector2i &gridPos, CellMap& cellMap);
-    static void toggleCell(const sf::Vector2i &gridPos, CellMap &cellMap);
-    static int neighbourCount(const sf::Vector2i &gridPos, CellMap &cellMap);
-    static bool willBecomeAlive(const sf::Vector2i &gridPos, CellMap &cellMap);
-    static void updateMap(CellMap &cellMap);
-    static void render(sf::RenderWindow &window, const CellMap &cellMap);
+    static Cell* getCell(const sf::Vector2i &gridPos);
+    static void toggleCell(const sf::Vector2i &gridPos, CellMap *cellMap);
+    static int neighbourCount(const sf::Vector2i &gridPos);
+    static bool willBecomeAlive(const sf::Vector2i &gridPos);
+    static void updateMap();
+    static void render(sf::RenderWindow &window);
 };
