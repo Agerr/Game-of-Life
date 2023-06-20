@@ -12,23 +12,23 @@ class Cell
     sf::RectangleShape rect;
 
 public:
-    sf::Vector2i pos_grid;
+    sf::Vector2i gridPos;
     sf::Vector2f pos;
 
-    Cell(const int &col, const int &row)
+    Cell(const sf::Vector2i &gridPos)
     {
-        pos_grid = sf::Vector2i(col, row);
-        pos = sf::Vector2f(col * size, row * size);
+        this->gridPos = gridPos;
+        pos = sf::Vector2f(gridPos.x * size, gridPos.y * size);
 
         rect.setPosition(pos);
         rect.setSize(sf::Vector2f(size, size));
         rect.setFillColor(sf::Color::White);
     }
 
-    static Cell* getCell(const int& col, const int& row, CellMap& cellMap);
-    static void toggleCell(const int &col, const int &row, CellMap &cellMap);
-    static int neighbourCount(const int &pos_x, const int &pos_y, CellMap &cellMap);
-    static bool willBecomeAlive(const int &col, const int &row, CellMap &cellMap);
+    static Cell* getCell(const sf::Vector2i &gridPos, CellMap& cellMap);
+    static void toggleCell(const sf::Vector2i &gridPos, CellMap &cellMap);
+    static int neighbourCount(const sf::Vector2i &gridPos, CellMap &cellMap);
+    static bool willBecomeAlive(const sf::Vector2i &gridPos, CellMap &cellMap);
     static void updateMap(CellMap &cellMap);
     static void render(sf::RenderWindow &window, const CellMap &cellMap);
 };

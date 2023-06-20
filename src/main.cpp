@@ -72,7 +72,7 @@ int main()
 
                             if (initialMousePos - lastMousePos == sf::Vector2i(0, 0))
                             {
-                                Cell::toggleCell(Debug::gridPos.x, Debug::gridPos.y, cellMap);
+                                Cell::toggleCell(Debug::gridPos, cellMap);
                             }
                             break;
                     }

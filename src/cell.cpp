@@ -10,11 +10,9 @@
 const int dx[] = {  -1, 0,  1,  -1, 1,  -1, 0,  1   };
 const int dy[] = {  -1, -1, -1, 0,  0,  1,  1,  1   };
 
-Cell* Cell::getCell(const int& col, const int& row, CellMap& cellMap)
+Cell* Cell::getCell(const sf::Vector2i &gridPos, CellMap& cellMap)
 {
-    const sf::Vector2i pos(col, row);
-
-    auto it = cellMap.find(pos);
+    auto it = cellMap.find(gridPos);
     if (it != cellMap.end())
     {
         return &(it->second);
@@ -22,37 +20,36 @@ Cell* Cell::getCell(const int& col, const int& row, CellMap& cellMap)
     return nullptr;
 }
 
-void Cell::toggleCell(const int &col, const int &row, CellMap &cellMap)
+void Cell::toggleCell(const sf::Vector2i &gridPos, CellMap &cellMap)
 {
-    Cell* cellptr = Cell::getCell(col, row, cellMap);
+    Cell* cellptr = Cell::getCell(gridPos, cellMap);
 
     if (cellptr == nullptr)
     {
-        cellMap.emplace(sf::Vector2i(col, row), Cell(col, row));
+        cellMap.emplace(gridPos, Cell(gridPos));
     }
     else
     {
-        cellMap.erase(sf::Vector2i(col, row));
+        cellMap.erase(gridPos);
     }
 }
 
-int Cell::neighbourCount(const int &col, const int &row, CellMap &cellMap)
+int Cell::neighbourCount(const sf::Vector2i &gridPos, CellMap &cellMap)
 {
     int count = 0;
 
     for (int i = 0; i < sizeof(dx) / sizeof(dx[0]); i++)
     {
-        const int neighbour_x = col + dx[i];
-        const int neighbour_y = row + dy[i];
+        const sf::Vector2i neighbourPos = gridPos + sf::Vector2i(dx[i], dy[i]);
 
-        if (Cell::getCell(neighbour_x, neighbour_y, cellMap) != nullptr) count++;
+        if (Cell::getCell(neighbourPos, cellMap) != nullptr) count++;
     }
     return count;
 }
 
-bool Cell::willBecomeAlive(const int &col, const int &row, CellMap &cellMap)
+bool Cell::willBecomeAlive(const sf::Vector2i &gridPos, CellMap &cellMap)
 {
-    const int neighbourCount = Cell::neighbourCount(col, row, cellMap);
+    const int neighbourCount = Cell::neighbourCount(gridPos, cellMap);
 
     return (neighbourCount >= reproduction_bound && neighbourCount <= overpopulation_bound);
 }
@@ -65,23 +62,22 @@ void Cell::updateMap(CellMap &cellMap)
     {
         Cell cell = pair.second;
 
-        const int neighbourCount = Cell::neighbourCount(cell.pos_grid.x, cell.pos_grid.y, cellMap);
+        const int neighbourCount = Cell::neighbourCount(cell.gridPos, cellMap);
         
         if (neighbourCount < underpopulation_bound || neighbourCount > overpopulation_bound)
         {
-            Cell::toggleCell(cell.pos_grid.x, cell.pos_grid.y, newCellMap);
+            Cell::toggleCell(cell.gridPos, newCellMap);
         }
 
         for (int i = 0; i < sizeof(dx) / sizeof(dx[0]); i++)
         {
-            const int neighbour_x = cell.pos_grid.x + dx[i];
-            const int neighbour_y = cell.pos_grid.y + dy[i];
+            const sf::Vector2i neighbourPos = cell.gridPos + sf::Vector2i(dx[i], dy[i]);
             
-            if (Cell::getCell(neighbour_x, neighbour_y, cellMap) != nullptr) continue;
+            if (Cell::getCell(neighbourPos, cellMap) != nullptr) continue;
 
-            if (willBecomeAlive(neighbour_x, neighbour_y, cellMap))
+            if (willBecomeAlive(neighbourPos, cellMap))
             {
-                Cell::toggleCell(neighbour_x, neighbour_y, newCellMap);
+                Cell::toggleCell(neighbourPos, newCellMap);
             }
         }
     }
