@@ -15,17 +15,14 @@ int main()
     sf::RenderWindow window(videoMode, windowName);
     window.setFramerateLimit(fpsLimit);
     window.setVerticalSyncEnabled(vSync);
+    window.setKeyRepeatEnabled(false);
 
     sf::View view = window.getDefaultView();
 
     Debug::init();
-    Mouse::updatePosition(window);
+    Mouse::updatePositions(window);
 
     bool isPaused = true;
-    bool leftPressed = false;
-    sf::Vector2i initialMousePos;
-    sf::Vector2i currentMousePos;
-    sf::Vector2i lastMousePos;
 
     // Game loop
     while (window.isOpen())
@@ -50,13 +47,10 @@ int main()
 
                 // Mouse events
                 case sf::Event::MouseButtonPressed:
-                    initialMousePos = sf::Mouse::getPosition(window);
-                    lastMousePos = initialMousePos;
-
                     switch (event.mouseButton.button)
                     {
                         case sf::Mouse::Left:
-                            leftPressed = true;
+                            Mouse::mousePress(window);
                             break;
                     }
                     break;
@@ -65,28 +59,24 @@ int main()
                     switch (event.mouseButton.button)
                     {
                         case sf::Mouse::Left:
-                            leftPressed = false;
-
-                            if (initialMousePos - lastMousePos == sf::Vector2i(0, 0))
+                            if (!Mouse::mouseDragged())
                                 Cell::toggleCell(Mouse::gridPos, nullptr);
                             break;
                     }
                     break;
 
                 case sf::Event::MouseMoved:
-                    Mouse::updatePosition(window);
+                    Mouse::updatePositions(window);
 
-                    if (leftPressed)
+                    if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
                     {
-                        const sf::Vector2f draggingOffset = sf::Vector2f(Mouse::screenPos - lastMousePos);
+                        const sf::Vector2f draggingOffset = sf::Vector2f(Mouse::screenPos - Mouse::prevScreenPos);
                         view.move(-draggingOffset.x / Mouse::zoomFactor, -draggingOffset.y / Mouse::zoomFactor);                     
                     }
-
-                    lastMousePos = Mouse::screenPos;
                     break;
 
                 case sf::Event::MouseWheelScrolled:
-                    const sf::Vector2f worldPosBeforeZoom = window.mapPixelToCoords(lastMousePos, view);
+                    const sf::Vector2f worldPosBeforeZoom = window.mapPixelToCoords(Mouse::screenPos, view);
 
                     if (event.mouseWheelScroll.delta > 0 && Mouse::zoomFactor < maxZoom)
                         view.zoom(1 - zoomStrength);
@@ -100,7 +90,7 @@ int main()
                         view.zoom(Mouse::zoomFactor / minZoom);
                     Mouse::updateZoomFactor(window, view);
 
-                    const sf::Vector2f worldPosAfterZoom = window.mapPixelToCoords(lastMousePos, view);
+                    const sf::Vector2f worldPosAfterZoom = window.mapPixelToCoords(Mouse::screenPos, view);
                     view.move(worldPosBeforeZoom - worldPosAfterZoom);
                     break;
             }
