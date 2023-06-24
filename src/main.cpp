@@ -74,16 +74,15 @@ int main()
                     break;
 
                 case sf::Event::MouseMoved:
-                    currentMousePos = sf::Mouse::getPosition(window);
+                    Debug::updatePositions(window);
 
                     if (leftPressed)
                     {
-                        const sf::Vector2f draggingOffset = sf::Vector2f(currentMousePos - lastMousePos);
+                        const sf::Vector2f draggingOffset = sf::Vector2f(Debug::mousePos - lastMousePos);
                         view.move(-draggingOffset.x / zoomFactor, -draggingOffset.y / zoomFactor);                     
                     }
 
-                    lastMousePos = currentMousePos;
-                    Debug::updatePositions(window);
+                    lastMousePos = Debug::mousePos;
                     break;
 
                 case sf::Event::MouseWheelScrolled:
