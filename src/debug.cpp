@@ -52,7 +52,7 @@ void Debug::updatePositions(const sf::RenderWindow &window)
 {
     mousePos = sf::Mouse::getPosition(window);
     worldPos = window.mapPixelToCoords(mousePos);
-    gridPos = sf::Vector2i(int(worldPos.x / size) - (worldPos.x < 0 ? 1 : 0), int(worldPos.y / size) - (worldPos.y < 0 ? 1 : 0));
+    gridPos = sf::Vector2i(worldPos.x / size - (worldPos.x < 0 ? 1 : 0), worldPos.y / size - (worldPos.y < 0 ? 1 : 0));
 }
 void Debug::updateMenu(const float &zoomFactor)
 {
