@@ -12,13 +12,9 @@ class Debug
     static sf::Text zoomFactorLabel;
     static sf::Text cellCountLabel;
     static sf::Text worldPosLabel;
-    static sf::Text mousePosLabel;
+    static sf::Text screenPosLabel;
 
 public:
-    static sf::Vector2i gridPos;
-    static sf::Vector2f worldPos;
-    static sf::Vector2i mousePos;
-    
     static bool pausedLabelVisible;
     static bool menu;
 
@@ -52,10 +48,10 @@ public:
         worldPosLabel.setFillColor(textColor);
         worldPosLabel.setPosition(10, 130);
 
-        mousePosLabel.setFont(font);
-        mousePosLabel.setCharacterSize(15);
-        mousePosLabel.setFillColor(textColor);
-        mousePosLabel.setPosition(10, 160);
+        screenPosLabel.setFont(font);
+        screenPosLabel.setCharacterSize(15);
+        screenPosLabel.setFillColor(textColor);
+        screenPosLabel.setPosition(10, 160);
 
         pausedLabelVisible = true;
         menu = false;
@@ -64,7 +60,6 @@ public:
     static void updatePausedLabel();
     static void renderPausedLabel(sf::RenderWindow &window);
     static void toggleMenu();
-    static void updatePositions(const sf::RenderWindow &window);
-    static void updateMenu(const float &zoomFactor);
+    static void updateMenu();
     static void renderMenu(sf::RenderWindow &window);
 };

@@ -2,6 +2,7 @@
 #include "clock.hpp"
 #include "config.hpp"
 #include "debug.hpp"
+#include "mouse.hpp"
 
 #include <SFML/Graphics.hpp>
 
@@ -18,11 +19,10 @@ int main()
     sf::View view = window.getDefaultView();
 
     Debug::init();
-    Debug::updatePositions(window);
+    Mouse::updatePosition(window);
 
     bool isPaused = true;
     bool leftPressed = false;
-    float zoomFactor = 1;
     sf::Vector2i initialMousePos;
     sf::Vector2i currentMousePos;
     sf::Vector2i lastMousePos;
@@ -68,37 +68,37 @@ int main()
                             leftPressed = false;
 
                             if (initialMousePos - lastMousePos == sf::Vector2i(0, 0))
-                                Cell::toggleCell(Debug::gridPos, nullptr);
+                                Cell::toggleCell(Mouse::gridPos, nullptr);
                             break;
                     }
                     break;
 
                 case sf::Event::MouseMoved:
-                    Debug::updatePositions(window);
+                    Mouse::updatePosition(window);
 
                     if (leftPressed)
                     {
-                        const sf::Vector2f draggingOffset = sf::Vector2f(Debug::mousePos - lastMousePos);
-                        view.move(-draggingOffset.x / zoomFactor, -draggingOffset.y / zoomFactor);                     
+                        const sf::Vector2f draggingOffset = sf::Vector2f(Mouse::screenPos - lastMousePos);
+                        view.move(-draggingOffset.x / Mouse::zoomFactor, -draggingOffset.y / Mouse::zoomFactor);                     
                     }
 
-                    lastMousePos = Debug::mousePos;
+                    lastMousePos = Mouse::screenPos;
                     break;
 
                 case sf::Event::MouseWheelScrolled:
                     const sf::Vector2f worldPosBeforeZoom = window.mapPixelToCoords(lastMousePos, view);
 
-                    if (event.mouseWheelScroll.delta > 0 && zoomFactor < maxZoom)
+                    if (event.mouseWheelScroll.delta > 0 && Mouse::zoomFactor < maxZoom)
                         view.zoom(1 - zoomStrength);
-                    else if (event.mouseWheelScroll.delta < 0 && zoomFactor > minZoom)
+                    else if (event.mouseWheelScroll.delta < 0 && Mouse::zoomFactor > minZoom)
                         view.zoom(1 + zoomStrength);
 
-                    zoomFactor = window.getSize().x / view.getSize().x;
-                    if (zoomFactor > maxZoom)
-                        view.zoom(zoomFactor / maxZoom);
-                    else if (zoomFactor < minZoom)
-                        view.zoom(zoomFactor / minZoom);
-                    zoomFactor = window.getSize().x / view.getSize().x;
+                    Mouse::updateZoomFactor(window, view);
+                    if (Mouse::zoomFactor > maxZoom)
+                        view.zoom(Mouse::zoomFactor / maxZoom);
+                    else if (Mouse::zoomFactor < minZoom)
+                        view.zoom(Mouse::zoomFactor / minZoom);
+                    Mouse::updateZoomFactor(window, view);
 
                     const sf::Vector2f worldPosAfterZoom = window.mapPixelToCoords(lastMousePos, view);
                     view.move(worldPosBeforeZoom - worldPosAfterZoom);
@@ -109,7 +109,7 @@ int main()
         // Logic
         Clock::updateClock();
         Debug::updatePausedLabel();
-        if (Debug::menu) Debug::updateMenu(zoomFactor);
+        if (Debug::menu) Debug::updateMenu();
 
         while (Clock::gameUpdate())
             if (!isPaused) Cell::updateMap();

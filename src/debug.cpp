@@ -2,24 +2,21 @@
 
 #include "cell.hpp"
 #include "clock.hpp"
-#include "config.hpp"
+#include "mouse.hpp"
 
 #include <SFML/Graphics.hpp>
 
 #include <cmath>
 #include <string>
 
-sf::Vector2i Debug::gridPos;
-sf::Vector2f Debug::worldPos;
-sf::Vector2i Debug::mousePos;
-
 sf::Font Debug::font;
+
 sf::Text Debug::pausedLabel;
 sf::Text Debug::gridPosLabel;
 sf::Text Debug::zoomFactorLabel;
 sf::Text Debug::cellCountLabel;
 sf::Text Debug::worldPosLabel;
-sf::Text Debug::mousePosLabel;
+sf::Text Debug::screenPosLabel;
 
 bool Debug::pausedLabelVisible;
 bool Debug::menu;
@@ -48,28 +45,22 @@ void Debug::toggleMenu()
     menu = !menu;
 }
 
-void Debug::updatePositions(const sf::RenderWindow &window)
+void Debug::updateMenu()
 {
-    mousePos = sf::Mouse::getPosition(window);
-    worldPos = window.mapPixelToCoords(mousePos);
-    gridPos = sf::Vector2i(worldPos.x / size - (worldPos.x < 0 ? 1 : 0), worldPos.y / size - (worldPos.y < 0 ? 1 : 0));
-}
-void Debug::updateMenu(const float &zoomFactor)
-{
-    const std::string gridPosString = "Grid\tX: " + std::to_string(gridPos.x) + "\tY: " + std::to_string(gridPos.y);
+    const std::string gridPosString = "Grid\tX: " + std::to_string(Mouse::gridPos.x) + "\tY: " + std::to_string(Mouse::gridPos.y);
     gridPosLabel.setString(gridPosString);
 
-    const std::string zoomFactorString = "Zoom\t" + roundToDecimalPlaces(zoomFactor, 2) + "x";
+    const std::string zoomFactorString = "Zoom\t" + roundToDecimalPlaces(Mouse::zoomFactor, 2) + "x";
     zoomFactorLabel.setString(zoomFactorString);
 
     const std::string cellCountString = "Cells\t" + std::to_string(Cell::getCount());
     cellCountLabel.setString(cellCountString);
 
-    const std::string worldPosString = "World\tX: " + roundToDecimalPlaces(worldPos.x, 0) + "\tY: " + roundToDecimalPlaces(worldPos.y, 0);
+    const std::string worldPosString = "World\t X: " + roundToDecimalPlaces(Mouse::worldPos.x, 0) + "\tY: " + roundToDecimalPlaces(Mouse::worldPos.y, 0);
     worldPosLabel.setString(worldPosString);
 
-    const std::string mousePosString = "Mouse\tX: " + std::to_string(mousePos.x) + "\tY: " + std::to_string(mousePos.y);
-    mousePosLabel.setString(mousePosString);
+    const std::string mousePosString = "Screen\tX: " + std::to_string(Mouse::screenPos.x) + "\tY: " + std::to_string(Mouse::screenPos.y);
+    screenPosLabel.setString(mousePosString);
 }
 
 void Debug::renderMenu(sf::RenderWindow &window)
@@ -78,5 +69,5 @@ void Debug::renderMenu(sf::RenderWindow &window)
     window.draw(zoomFactorLabel);
     window.draw(cellCountLabel);
     window.draw(worldPosLabel);
-    window.draw(mousePosLabel);
+    window.draw(screenPosLabel);
 }
