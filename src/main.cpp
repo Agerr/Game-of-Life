@@ -1,37 +1,28 @@
+#include "camera.hpp"
 #include "cell.hpp"
-#include "cellMap.hpp"
 #include "clock.hpp"
 #include "config.hpp"
 #include "debug.hpp"
+#include "mouse.hpp"
 
 #include <SFML/Graphics.hpp>
 
-#include <iostream>
-
 int main()
 {
-    // Window
     sf::VideoMode videoMode = sf::VideoMode(width, height);
     if (fullscreen) videoMode = sf::VideoMode::getFullscreenModes()[0];
 
     sf::RenderWindow window(videoMode, windowName);
     window.setFramerateLimit(fpsLimit);
     window.setVerticalSyncEnabled(vSync);
+    window.setKeyRepeatEnabled(false);
 
-    sf::View view = window.getDefaultView();
-
-    Debug::init(sf::Mouse::getPosition(window));
-
-    CellMap cellMap;
+    Camera::init(window);
+    Debug::init();
+    Mouse::updatePositions(window);
 
     bool isPaused = true;
-    bool leftPressed = false;
-    float zoomFactor = 1;
-    sf::Vector2i initialMousePos;
-    sf::Vector2i currentMousePos;
-    sf::Vector2i lastMousePos;
 
-    // Game loop
     while (window.isOpen())
     {
         // Events
@@ -54,13 +45,10 @@ int main()
 
                 // Mouse events
                 case sf::Event::MouseButtonPressed:
-                    initialMousePos = sf::Mouse::getPosition(window);
-                    lastMousePos = initialMousePos;
-
                     switch (event.mouseButton.button)
                     {
                         case sf::Mouse::Left:
-                            leftPressed = true;
+                            Mouse::mousePress(window);
                             break;
                     }
                     break;
@@ -69,51 +57,21 @@ int main()
                     switch (event.mouseButton.button)
                     {
                         case sf::Mouse::Left:
-                            leftPressed = false;
-
-                            if (initialMousePos - lastMousePos == sf::Vector2i(0, 0))
-                            {
-                                const sf::Vector2f worldPos = window.mapPixelToCoords(lastMousePos);
-                                const int pressed_col = int(worldPos.x / size) - (worldPos.x < 0 ? 1 : 0);
-                                const int pressed_row = int(worldPos.y / size) - (worldPos.y < 0 ? 1 : 0);
-                                Cell::toggleCell(pressed_col, pressed_row, cellMap);
-                            }
+                            if (!Mouse::mouseDragged())
+                                Cell::toggleCell(Mouse::gridPos, nullptr);
                             break;
                     }
                     break;
+
                 case sf::Event::MouseMoved:
-                    currentMousePos = sf::Mouse::getPosition(window);
+                    Mouse::updatePositions(window);
 
-                    if (leftPressed)
-                    {
-                        const sf::Vector2f draggingOffset = sf::Vector2f(currentMousePos - lastMousePos);
-                        view.move(-draggingOffset.x / zoomFactor, -draggingOffset.y / zoomFactor);                     
-                    }
-
-                    lastMousePos = currentMousePos;
-                    Debug::updateCoords(lastMousePos);
+                    if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+                        Camera::move(-sf::Vector2f(Mouse::screenPos - Mouse::prevScreenPos));
                     break;
 
                 case sf::Event::MouseWheelScrolled:
-                    const sf::Vector2f worldPosBeforeZoom = window.mapPixelToCoords(lastMousePos, view);
-
-                    if (event.mouseWheelScroll.delta > 0)
-                    {
-                        if (zoomFactor < maxZoom) view.zoom(1 - zoomStrength);
-                    }
-                    else
-                    {
-                        if (zoomFactor > minZoom) view.zoom(1 + zoomStrength);
-                    }
-
-                    zoomFactor = window.getSize().x / view.getSize().x;
-
-                    if (zoomFactor > maxZoom) view.zoom(zoomFactor / maxZoom);
-                    else if (zoomFactor < minZoom) view.zoom(zoomFactor / minZoom);
-                    zoomFactor = window.getSize().x / view.getSize().x;
-
-                    const sf::Vector2f worldPosAfterZoom = window.mapPixelToCoords(lastMousePos, view);
-                    view.move(worldPosBeforeZoom - worldPosAfterZoom);
+                    Camera::zoom(event.mouseWheelScroll.delta < 0, window);
                     break;
             }
         }
@@ -121,24 +79,21 @@ int main()
         // Logic
         Clock::updateClock();
         Debug::updatePausedLabel();
-        if (Debug::menu) Debug::updateMenu(window, zoomFactor);
+        if (Debug::menu) Debug::updateMenu();
 
         while (Clock::gameUpdate())
-        {
-            if (!isPaused) Cell::updateMap(cellMap);
-        }
+            if (!isPaused) Cell::updateMap();
 
         // Render
         window.clear();
 
-        // Fixed
+        Cell::render(window);
+
+        // Fixed view
         window.setView(window.getDefaultView());
         if (isPaused && Debug::pausedLabelVisible) Debug::renderPausedLabel(window);
         if (Debug::menu) Debug::renderMenu(window);
-
-        // Grid
-        window.setView(view);
-        Cell::render(window, cellMap);
+        Camera::setView(window);
 
         window.display();
     }
