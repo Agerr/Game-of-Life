@@ -1,5 +1,6 @@
 #include "debug.hpp"
 
+#include "camera.hpp"
 #include "cell.hpp"
 #include "clock.hpp"
 #include "mouse.hpp"
@@ -50,7 +51,7 @@ void Debug::updateMenu()
     const std::string gridPosString = "Grid\tX: " + std::to_string(Mouse::gridPos.x) + "\tY: " + std::to_string(Mouse::gridPos.y);
     gridPosLabel.setString(gridPosString);
 
-    const std::string zoomFactorString = "Zoom\t" + roundToDecimalPlaces(Mouse::zoomFactor, 2) + "x";
+    const std::string zoomFactorString = "Zoom\t" + roundToDecimalPlaces(Camera::zoomFactor, 2) + "x";
     zoomFactorLabel.setString(zoomFactorString);
 
     const std::string cellCountString = "Cells\t" + std::to_string(Cell::getCount());

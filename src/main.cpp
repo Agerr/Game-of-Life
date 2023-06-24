@@ -1,3 +1,4 @@
+#include "camera.hpp"
 #include "cell.hpp"
 #include "clock.hpp"
 #include "config.hpp"
@@ -8,7 +9,6 @@
 
 int main()
 {
-    // Window
     sf::VideoMode videoMode = sf::VideoMode(width, height);
     if (fullscreen) videoMode = sf::VideoMode::getFullscreenModes()[0];
 
@@ -17,14 +17,12 @@ int main()
     window.setVerticalSyncEnabled(vSync);
     window.setKeyRepeatEnabled(false);
 
-    sf::View view = window.getDefaultView();
-
+    Camera::init(window);
     Debug::init();
     Mouse::updatePositions(window);
 
     bool isPaused = true;
 
-    // Game loop
     while (window.isOpen())
     {
         // Events
@@ -69,29 +67,11 @@ int main()
                     Mouse::updatePositions(window);
 
                     if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-                    {
-                        const sf::Vector2f draggingOffset = sf::Vector2f(Mouse::screenPos - Mouse::prevScreenPos);
-                        view.move(-draggingOffset.x / Mouse::zoomFactor, -draggingOffset.y / Mouse::zoomFactor);                     
-                    }
+                        Camera::move(-sf::Vector2f(Mouse::screenPos - Mouse::prevScreenPos));
                     break;
 
                 case sf::Event::MouseWheelScrolled:
-                    const sf::Vector2f worldPosBeforeZoom = window.mapPixelToCoords(Mouse::screenPos, view);
-
-                    if (event.mouseWheelScroll.delta > 0 && Mouse::zoomFactor < maxZoom)
-                        view.zoom(1 - zoomStrength);
-                    else if (event.mouseWheelScroll.delta < 0 && Mouse::zoomFactor > minZoom)
-                        view.zoom(1 + zoomStrength);
-
-                    Mouse::updateZoomFactor(window, view);
-                    if (Mouse::zoomFactor > maxZoom)
-                        view.zoom(Mouse::zoomFactor / maxZoom);
-                    else if (Mouse::zoomFactor < minZoom)
-                        view.zoom(Mouse::zoomFactor / minZoom);
-                    Mouse::updateZoomFactor(window, view);
-
-                    const sf::Vector2f worldPosAfterZoom = window.mapPixelToCoords(Mouse::screenPos, view);
-                    view.move(worldPosBeforeZoom - worldPosAfterZoom);
+                    Camera::zoom(event.mouseWheelScroll.delta < 0, window);
                     break;
             }
         }
@@ -113,7 +93,7 @@ int main()
         window.setView(window.getDefaultView());
         if (isPaused && Debug::pausedLabelVisible) Debug::renderPausedLabel(window);
         if (Debug::menu) Debug::renderMenu(window);
-        window.setView(view);
+        Camera::setView(window);
 
         window.display();
     }
