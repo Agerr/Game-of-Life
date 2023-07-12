@@ -82,7 +82,7 @@ int main()
         if (Debug::menu) Debug::updateMenu();
 
         // while (Clock::gameUpdate())
-        //     if (!isPaused) Cell::updateMap();
+        //     if (!isPaused) Grid::updateMap();
 
         // Render
         window.clear();

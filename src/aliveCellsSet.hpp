@@ -2,6 +2,8 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <unordered_set>
+
 struct Vector2iHash
 {
     std::size_t operator()(const sf::Vector2i& vec) const
@@ -12,3 +14,5 @@ struct Vector2iHash
         return seed;
     }
 };
+
+using AliveCellsSet = std::unordered_set<sf::Vector2i, Vector2iHash>;
