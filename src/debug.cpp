@@ -1,8 +1,8 @@
 #include "debug.hpp"
 
 #include "camera.hpp"
-#include "cell.hpp"
 #include "clock.hpp"
+#include "grid.hpp"
 #include "mouse.hpp"
 
 #include <SFML/Graphics.hpp>
@@ -54,7 +54,7 @@ void Debug::updateMenu()
     const std::string zoomFactorString = "Zoom\t" + roundToDecimalPlaces(Camera::zoomFactor, 2) + "x";
     zoomFactorLabel.setString(zoomFactorString);
 
-    const std::string cellCountString = "Cells\t" + std::to_string(Cell::getCount());
+    const std::string cellCountString = "Cells\t" + std::to_string(Grid::cellCount());
     cellCountLabel.setString(cellCountString);
 
     const std::string worldPosString = "World\t X: " + roundToDecimalPlaces(Mouse::worldPos.x, 0) + "\tY: " + roundToDecimalPlaces(Mouse::worldPos.y, 0);

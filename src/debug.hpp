@@ -7,6 +7,7 @@
 class Debug
 {
     static sf::Font font;
+    
     static sf::Text pausedLabel;
     static sf::Text gridPosLabel;
     static sf::Text zoomFactorLabel;

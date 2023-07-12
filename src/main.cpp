@@ -1,8 +1,8 @@
 #include "camera.hpp"
-#include "cell.hpp"
 #include "clock.hpp"
 #include "config.hpp"
 #include "debug.hpp"
+#include "grid.hpp"
 #include "mouse.hpp"
 
 #include <SFML/Graphics.hpp>
@@ -58,7 +58,7 @@ int main()
                     {
                         case sf::Mouse::Left:
                             if (!Mouse::mouseDragged())
-                                Cell::toggleCell(Mouse::gridPos, nullptr);
+                                //Grid::toggleCell(Mouse::gridPos);
                             break;
                     }
                     break;
@@ -82,12 +82,12 @@ int main()
         if (Debug::menu) Debug::updateMenu();
 
         while (Clock::gameUpdate())
-            if (!isPaused) Cell::updateMap();
+            if (!isPaused) //Cell::updateMap();
 
         // Render
         window.clear();
 
-        Cell::render(window);
+        //Grid::render(window);
 
         // Fixed view
         window.setView(window.getDefaultView());
