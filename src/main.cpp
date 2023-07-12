@@ -81,8 +81,8 @@ int main()
         Debug::updatePausedLabel();
         if (Debug::menu) Debug::updateMenu();
 
-        // while (Clock::gameUpdate())
-        //     if (!isPaused) Grid::updateMap();
+        while (Clock::gameUpdate())
+            if (!isPaused) Grid::updateGrid();
 
         // Render
         window.clear();

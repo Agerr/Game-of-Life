@@ -1,6 +1,6 @@
 #include "grid.hpp"
 
-#include "aliveCellsSet.hpp"
+#include "cellsSet.hpp"
 #include "config.hpp"
 #include "neighbourCellMap.hpp"
 
@@ -8,7 +8,7 @@
 
 #include <unordered_set>
 
-AliveCellsSet Grid::aliveCells;
+cellsSet Grid::aliveCells;
 NeighbourCellMap Grid::neighbourCells;
 
 sf::RectangleShape Grid::cellRectangle = [](){
@@ -30,8 +30,10 @@ void Grid::toggleCell(const sf::Vector2i &gridPos)
         aliveCells.erase(gridPos);
 }
 
-void Grid::update()
+void Grid::updateNeighbourMap()
 {
+    neighbourCells.clear();
+
     for (const sf::Vector2i &gridPos : aliveCells)
     {
         for (int i = 0; i < sizeof(dx) / sizeof(dx[0]); i++)
@@ -40,6 +42,25 @@ void Grid::update()
             neighbourCells[neighbourPos]++;
         }
     }
+}
+
+void Grid::updateGrid()
+{
+    Grid::updateNeighbourMap();
+
+    cellsSet nextGeneration;
+
+    for (const auto &pair : neighbourCells)
+    {
+        if (pair.second < underpopulation_bound || pair.second > overpopulation_bound) continue;
+
+        const bool alive = aliveCells.count(pair.first) == 1;
+        if (!alive && pair.second < reproduction_bound) continue;
+
+        nextGeneration.insert(pair.first);
+    }
+
+    aliveCells = nextGeneration;
 }
 
 void Grid::render(sf::RenderWindow &window)

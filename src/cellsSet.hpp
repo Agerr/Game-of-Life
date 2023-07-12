@@ -15,4 +15,4 @@ struct Vector2iHash
     }
 };
 
-using AliveCellsSet = std::unordered_set<sf::Vector2i, Vector2iHash>;
+using cellsSet = std::unordered_set<sf::Vector2i, Vector2iHash>;

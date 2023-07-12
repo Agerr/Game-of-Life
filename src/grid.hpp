@@ -1,13 +1,13 @@
 #pragma once
 
-#include "aliveCellsSet.hpp"
+#include "cellsSet.hpp"
 #include "neighbourCellMap.hpp"
 
 #include <SFML/Graphics.hpp>
 
 class Grid
 {
-    static AliveCellsSet aliveCells;
+    static cellsSet aliveCells;
     static NeighbourCellMap neighbourCells;
 
     static sf::RectangleShape cellRectangle;
@@ -15,6 +15,7 @@ class Grid
 public:
     static int cellCount();
     static void toggleCell(const sf::Vector2i &gridPos);
-    static void update();
+    static void updateNeighbourMap();
+    static void updateGrid();
     static void render(sf::RenderWindow &window);
 };
