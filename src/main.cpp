@@ -58,7 +58,7 @@ int main()
                     {
                         case sf::Mouse::Left:
                             if (!Mouse::mouseDragged())
-                                //Grid::toggleCell(Mouse::gridPos);
+                                Grid::toggleCell(Mouse::gridPos);
                             break;
                     }
                     break;
@@ -81,13 +81,13 @@ int main()
         Debug::updatePausedLabel();
         if (Debug::menu) Debug::updateMenu();
 
-        while (Clock::gameUpdate())
-            if (!isPaused) //Cell::updateMap();
+        // while (Clock::gameUpdate())
+        //     if (!isPaused) Cell::updateMap();
 
         // Render
         window.clear();
 
-        //Grid::render(window);
+        Grid::render(window);
 
         // Fixed view
         window.setView(window.getDefaultView());
