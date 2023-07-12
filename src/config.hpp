@@ -12,7 +12,8 @@ const int               textSize                    =       75;
 const sf::Color         textColor                   =       sf::Color(160, 160, 160, 191);
 const int               blinksPerSecond             =       2;
 
-const int               ups                         =       25;
+const int               startUps                    =       25;
+const int               upsChangeStrength           =       5;
 const int               width                       =       1600;
 const int               height                      =       800;
 const int               size                        =       10;

@@ -15,6 +15,7 @@ sf::Font Debug::font;
 sf::Text Debug::pausedLabel;
 sf::Text Debug::gridPosLabel;
 sf::Text Debug::zoomFactorLabel;
+sf::Text Debug::upsLabel;
 sf::Text Debug::cellCountLabel;
 sf::Text Debug::worldPosLabel;
 sf::Text Debug::screenPosLabel;
@@ -54,6 +55,9 @@ void Debug::updateMenu()
     const std::string zoomFactorString = "Zoom\t" + roundToDecimalPlaces(Camera::zoomFactor, 2) + "x";
     zoomFactorLabel.setString(zoomFactorString);
 
+    const std::string upsString = "UPS\t" + std::to_string(Clock::ups);
+    upsLabel.setString(upsString);
+
     const std::string cellCountString = "Cells\t" + std::to_string(Grid::cellCount());
     cellCountLabel.setString(cellCountString);
 
@@ -68,6 +72,7 @@ void Debug::renderMenu(sf::RenderWindow &window)
 {
     window.draw(gridPosLabel);
     window.draw(zoomFactorLabel);
+    window.draw(upsLabel);
     window.draw(cellCountLabel);
     window.draw(worldPosLabel);
     window.draw(screenPosLabel);

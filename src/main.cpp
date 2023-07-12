@@ -15,7 +15,7 @@ int main()
     sf::RenderWindow window(videoMode, windowName);
     window.setFramerateLimit(fpsLimit);
     window.setVerticalSyncEnabled(vSync);
-    window.setKeyRepeatEnabled(false);
+    window.setKeyRepeatEnabled(true);
 
     Camera::init(window);
     Debug::init();
@@ -37,10 +37,12 @@ int main()
                 case sf::Event::KeyPressed:
                     switch (event.key.code)
                     {
-                        case sf::Keyboard::Escape       :   window.close();         break;
-                        case sf::Keyboard::F1           :   Debug::toggleMenu();    break;
-                        case sf::Keyboard::Space        :   isPaused = !isPaused;   break;
-                        case sf::Keyboard::R            :   Grid::reset();          break;
+                        case sf::Keyboard::Escape       :   window.close();             break;
+                        case sf::Keyboard::F1           :   Debug::toggleMenu();        break;
+                        case sf::Keyboard::Add          :   Clock::changeUps(true);     break;
+                        case sf::Keyboard::Subtract     :   Clock::changeUps(false);    break;
+                        case sf::Keyboard::R            :   Grid::reset();              break;
+                        case sf::Keyboard::Space        :   isPaused = !isPaused;       break;
                     }
                     break;
 
