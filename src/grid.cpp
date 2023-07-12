@@ -71,3 +71,8 @@ void Grid::render(sf::RenderWindow &window)
         window.draw(cellRectangle);
     }
 }
+
+void Grid::reset()
+{
+    aliveCells.clear(); 
+}

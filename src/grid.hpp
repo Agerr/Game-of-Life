@@ -18,4 +18,5 @@ public:
     static void updateNeighbourMap();
     static void updateGrid();
     static void render(sf::RenderWindow &window);
+    static void reset();
 };

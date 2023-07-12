@@ -40,6 +40,7 @@ int main()
                         case sf::Keyboard::Escape       :   window.close();         break;
                         case sf::Keyboard::F1           :   Debug::toggleMenu();    break;
                         case sf::Keyboard::Space        :   isPaused = !isPaused;   break;
+                        case sf::Keyboard::R            :   Grid::reset();          break;
                     }
                     break;
 
