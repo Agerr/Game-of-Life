@@ -4,7 +4,7 @@
 
 #include <string>
 
-const std::string       windowName                  =       "_test_";
+const std::string       windowName                  =       "Game of Life";
 const bool              fullscreen                  =       false;
 const int               fpsLimit                    =       60;
 const bool              vSync                       =       true;
